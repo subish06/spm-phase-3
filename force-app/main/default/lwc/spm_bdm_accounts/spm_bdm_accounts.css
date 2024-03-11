@@ -1,0 +1,50 @@
+.dropIcon {
+    position: relative;
+    display: block;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    padding: 4px;
+    padding-top: 2px;
+}
+
+.dropIconContainer {
+    position: absolute;
+    left: -11px;
+    background-color: #fff;
+    border: 1px solid #c9c9c9;
+    border-radius: 50%;
+}
+
+.dropIconContainer:hover {
+    background-color: #cfeaff;
+    --sds-c-icon-color-foreground-default: #6dabdc;
+    border: 1px solid transparent;
+    transition: all 0.5s linear;
+}
+
+.card {
+    border: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.card-selected {
+    border: 1px solid #d1d1d1;
+    background: #ecf5fc;
+    border-radius: 4%;
+}
+
+.card-unselected {
+    border: 1px solid #d1d1d1;
+    border-radius: 4%;
+}
+
+.my-icon-up {
+    --sds-c-icon-color-foreground-default: green;
+}
+
+.my-icon-down {
+    --sds-c-icon-color-foreground-default: red;
+}

@@ -1,0 +1,12 @@
+.hasCreditHold
+{
+    text-align: center;
+    padding: 15px;
+    background-color: #f04b24;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.slds-box{
+    margin-bottom: 10px;
+}

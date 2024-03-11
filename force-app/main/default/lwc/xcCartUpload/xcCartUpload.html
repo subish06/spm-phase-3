@@ -1,0 +1,8 @@
+<template>
+    <label for="fileSelect">Upload CSV to Cart (up to 500 items)</label><br>
+    <input id="fileSelect" class="upload" type="file" accept=".csv" onchange={handleUploadFinished} />  
+    <template for:each={filesUploaded} for:item="file">
+        <div key={file.name} class="slds-text-body_small">{file.name}</div>
+    </template>
+    <lightning-button variant="brand" label="Upload Cart From CSV" title="Upload CSV to Cart" onclick={handleClick} class="slds-m-left_x-small" disabled={disabledButton}></lightning-button>
+</template>

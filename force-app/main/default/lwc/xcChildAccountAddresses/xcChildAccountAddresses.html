@@ -1,0 +1,13 @@
+<template>
+	<template if:true={dataExist}>
+		<div style="" class="slds-box">
+			<lightning-datatable key-field="id" data={data} columns={columns} hide-checkbox-column
+				resize-column-disabled>
+			</lightning-datatable>
+		</div>
+	</template>
+
+	<template if:false={dataExist}>
+        No Related Addresses Found!
+	</template>
+</template>

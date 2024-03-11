@@ -1,0 +1,101 @@
+<template>
+	<!--<nav class="navbar">
+    <lightning-layout multiple-rows>
+
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-6">
+
+                <div class="userlogo">
+                    <lightning-icon icon-name="action:custom69">
+                    </lightning-icon>
+                </div>
+            </div>
+            <div class="slds-grid navClass">
+                <div class="slds-col slds-size_2-of-6">
+                    <h1 class="heading">Gibson</h1>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <ul class="menu-item">
+            <div class="slds-grid slds-page-header__detail-row">
+                <div class="slds-col slds-size_2-of-12">
+
+                    <li class="menu-item">
+                        <a href="#" onclick={handleNavigation}>Home</a>
+                    </li>
+                </div>
+
+
+                <div class="slds-col slds-size_5-of-12"></div>
+
+                <li class="menu-item">
+                    <a href="#" onclick={handleNavigation}>All Categories</a>
+                </li>
+            </div>
+        </ul>
+    </lightning-layout>
+</nav>-->
+
+
+	<nav class="navigation-bar">
+		<div class="slds-grid slds-wrap">
+
+
+			<ul class="navigation-list">
+				<div class="slds-grid">
+					<lightning-icon icon-name="utility:home" size="small"></lightning-icon>
+
+					<div class="slds-m-bottom_x-small">
+
+						<span>
+        <li  class="navigation-item">Home</li>
+        <li class="navigation-item" onclick={toggleDropdown}>
+        <div class="slds-dropdown-trigger ">
+									<label for="profileMenuCheck" class="">All Categories</label>
+									<input type="checkbox" id="profileMenuCheck" name="profileMenuCheck">
+									<div 
+                                        class="slds-dropdown slds-dropdown--left slds-dropdown--actions slds-dropdown--menu slds-nubbin_top-left">
+                                        <ul for:each={parentCat} for:item="item" key={item.Id} class="slds-dropdown__list" role="menu">
+                                            <li id="menu1" href="#" class="slds-dropdown__item">
+                                                <a data-id={item.Id} onclick={redirectToProfileUrl} role="menuitemradio">
+                                                    <p class="slds-truncate">
+                                                        <i class="ion  ion-checkmark  slds-m-right--x-small"></i>{item.Name}
+                                                    </p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+        </div>
+         </li>
+        <!-- <div class={dropdownClass}>
+            <ul>
+              <li>Option 1</li>
+              <li>Option 2</li>
+              <li>Option 3</li>
+            </ul>
+        </div> -->
+        </span>
+					</div>
+				</div>
+			</ul>
+		</div>
+
+	</nav>
+
+
+</template>
+<!-- <template>
+<nav>
+<ul class="nav-list">
+<template for:each={navigationOptions} for:item="Home">
+<li key={option.id}>
+<a href="#" onclick={handleNavigation}>{option.label}</a>
+</li>
+</template>
+</ul>
+</nav>
+</template> -->

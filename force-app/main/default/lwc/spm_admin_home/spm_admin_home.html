@@ -1,0 +1,85 @@
+<template>
+    <lightning-card>
+        <h1 slot="title">Hi, {firstName} {lastName}</h1>
+        <template lwc:if={managerList.length}>
+            <lightning-layout multiple-rows style="padding-top: 16px;padding-bottom: 16px" class="slds-p-around_medium">
+                <lightning-layout-item size="8">
+                    <div style="font-size: 14px;font-weight: bold;padding-top: 8px;">Business Development Directors</div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" style="font-size: 14px;text-align: right;padding-top: 8px;">Financial Year
+                    :</lightning-layout-item>
+                <lightning-layout-item style="width: 150px;padding-left: 8px;padding-right: 8px;" size="2">
+                    <lightning-combobox name="yearSelection" value={selYear} options={financialYearPickList}
+                        placeholder="Financial Year" onchange={handleFYChange} variant="label-hidden">
+                    </lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+
+            
+            <div style="padding:1rem">
+            <div style="display: flex;overflow-x: scroll; padding-bottom:10px; padding:1rem ; border-width:2px;
+            border-style:solid;
+            border-color:black;">
+                <template for:each={managerList} for:item="item">
+                    <div key={item.Id} class={item.class} style="min-width: 320px;
+                    max-width: 320px;width: 100%;display: flex;" onclick={handleClick} data-user-id={item.userId}
+                        data-user-name={item.name} data-fy={item.fy} data-bdd={item.bdd}>
+                        <div style="width:40%;">
+                            <div class="slds-avatar slds-avatar_circle avatar slds-align_absolute-center">
+                                <img src={item.url} alt={item.name} />
+                            </div>
+                            <div class="slds-p-top_x-small slds-align_absolute-center"
+                                style="text-align:center; font-weight: bold">{item.name}</div>
+                        </div>
+
+                        <div class="slds-var-m-around_x-small" style="width:60%;padding-left: 12px;">
+                            <h3 class="slds-align_absolute-left">
+                                <p class="target-highlight">Target :<span
+                                        style="font-weight: bold; padding-left: 20px;">{item.targetAmount}</span>
+                                </p>
+                            </h3>
+                            <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                                <p class="actuals-highlight">Actuals :<span
+                                        style="font-weight: bold; padding-left: 15px;">{item.actualAmount}</span>
+                                </p>
+                            </h3>
+                            <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                                <p class="variance-highlight">Variance :
+                                    <span style="font-weight: bold; padding-left: 8px;">{item.varianceAmount}
+                                        <template if:true={item.displayArrow}>
+
+                                            <template if:true={item.varianceArrow}>
+                                                <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                    size="xx-small"></lightning-icon>
+                                            </template>
+                                            <template if:false={item.varianceArrow}>
+                                                <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
+                                                    size="xx-small">
+                                                </lightning-icon>
+                                            </template>
+                                        </template>
+                                    </span>
+                                </p>
+                            </h3>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+        </template>
+        <template lwc:else>
+                <p style="display: flex; justify-content: center;" class="slds-p-around_small">
+                    <b>Unfortunately, it appears that you have no Business Development Directors assigned to your account. Please contact your
+                        administrator
+                        to request the necessary access.</b>
+                </p>
+        </template>
+
+        <div style="padding: 1rem;">
+            <c-spm_bdd_manager_card current-user={selectedBdd} selected-financial-year={selYear}
+                refresh-table={timeoutId} is-edit-disable={isEditDisable} currency-symbol={currencySymbol} onchildevent={handleChildEvent}>
+            </c-spm_bdd_manager_card>
+        </div>
+    </lightning-card>
+
+</template>

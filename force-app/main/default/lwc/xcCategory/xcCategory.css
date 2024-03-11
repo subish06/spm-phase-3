@@ -1,0 +1,50 @@
+.cat-header {
+    font-size: 30px;
+}
+
+.container {
+    background-color: #c3cad6;
+    /* width:254px; */
+    border-radius: 15px;
+}
+
+li,
+p {
+    cursor: pointer;
+}
+
+
+.slds-dropdown--actions {
+    margin-left: 70px;
+    margin-top: -35px;
+}
+
+
+
+
+
+
+.slds-dropdown-trigger input[type="checkbox"] {
+    display: none;
+}
+
+
+*, *:before, *:after {
+    font-size: 13px;
+}
+.subcategoryselected{
+    background: lightgray;
+}
+
+div .slds-carousel__panel-action .slds-carousel__content {
+    display: none !important;
+}
+
+
+.lgc-bg {
+    background-color: rgb(242 242 242);
+}
+
+.lgc-bg-inverse {
+    background-color: rgb(22 50 92);
+}

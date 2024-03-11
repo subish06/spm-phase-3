@@ -1,0 +1,80 @@
+.slds-dropdown-trigger input[type="checkbox"] {
+        display: none;
+    }
+    
+    .slds-dropdown--actions {
+        margin-left: 0px;
+        margin-top: 10px;
+    }
+    
+    .navbar {
+        background-color: #000000;
+        /* Black background color */
+        color: black;
+        /* Text color */
+    }
+    
+    .userlogo {
+        text-align: right;
+    }
+    
+    
+
+    /* .navClass {
+    background-color: black;
+    color: white;
+} */
+    
+    .heading {
+        font-size: 2rem;
+        padding: 10px;
+        margin-left: 10px;
+    }
+    
+    .menu-item a {
+        /* display: ruby-text-container; */
+        text-decoration: none;
+        color: #ffffff;
+        /* Text color */
+        background-color: black;
+        /* Black background color */
+        padding: none
+        /* Adjust padding as needed */
+    }
+    
+    .navigation-bar {
+        background-color: white;
+        padding: 10px;
+    }
+    
+    .navigation-item {
+        padding: 15px;
+    }
+    
+    .navigation-list {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        padding-right: 20px;
+    }
+    
+    .navigation-item {
+        margin: 0 1px;
+        display: inline-block;
+        cursor: pointer;
+    }
+    
+    .navigation-item {
+        cursor: pointer;
+    }
+    
+    .dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        display: none;
+    }
+    
+    .dropdown.open {
+        display: block;
+    }

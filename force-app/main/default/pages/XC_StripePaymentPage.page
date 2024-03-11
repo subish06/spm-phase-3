@@ -1,0 +1,363 @@
+<apex:page controller="XC_StripePaymentVFController" applyHtmlTag="false" applyBodyTag="false" showHeader="false" sidebar="false" standardStylesheets="false" action="{!checkError}">
+    
+    <apex:slds />
+    <apex:includeScript value="https://js.stripe.com/v3/" />
+
+    <div id="noGatewayError" class="noShow">
+        Couldn't connect to payment gateway, please try again. If this issue persists please contact Customer Support.
+    </div>
+    <div id="payForm" class="slds-scope payDiv noShow">
+        <div class="totalFeeAmount">Total Fee: ${!totalFee}</div>
+        <form id="payment-form">
+            <fieldset>
+                <div class="row">
+                    <!--<label for="nameOnCard">Name on Card</label>-->
+                    <input id="nameOnCard" type="text" placeholder="Name on Card" required="" autocomplete="name"/>
+                </div>
+                <div class="row">
+                    <div id="card-element">
+                        <!-- Elements will create input elements here -->
+                    </div>
+                </div>
+                <!-- SPINNER -->
+                <div id="spinner" class="slds-spinner_container slds-hide" >
+                    <div role="status" class="slds-spinner slds-spinner_medium">
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+        <!-- / SPINNER -->
+            </fieldset>
+            
+            
+            
+            <!-- We'll put the error messages in this element -->
+            <div id="card-errors" role="alert"></div>
+            
+            <button id="submit" class="slds-button slds-button_brand" disabled="true">Submit Order*</button>
+        </form>
+        <div class="dontClose">
+            *After submitting, don't close the window until payment finishes processing
+        </div>
+        
+    </div> 
+    
+    
+
+    <div class="noShow" id="payInt">{!payIntent}</div>
+    <div class="noShow" id="temp">{!temp}</div>
+    <div class="noShow" id="publicId">{!publicKey}</div>
+    <div class="noShow" id="isError">{!isError}</div>
+    
+    <style>
+        .noShow
+        {
+            display: none;
+        }
+
+        .dontClose
+        {
+            margin: 5px 15px 5px 20px;
+            color: black;
+            font-size: 12px !important;
+        }
+
+        .totalFeeAmount
+        {
+            margin: 5px 15px 10px 15px;
+            color: black;
+            font-weight: bold;
+        }
+
+        .clickTerms
+        {
+            margin: 5px 20px 5px 20px;
+            color: black;
+            font-size: 10px !important;
+        }
+
+        #card-errors
+        {
+            display : none;
+            text-transform: uppercase;
+            background-color: rgb(255, 77, 77);
+            color: rgb(255, 255, 255);
+            padding: 10px;
+            margin: 0 15px 20px;
+        }
+        
+        #noGatewayError
+        {
+            background-color: rgb(255, 77, 77);
+            color: rgb(255, 255, 255);
+            padding: 10px;
+            margin: 0 15px 20px;
+        }
+
+        .payDiv * 
+        {
+        font-family: Roboto, Open Sans, Segoe UI, sans-serif;
+        font-size: 16px;
+        
+        }
+
+        .payDiv fieldset 
+        {
+        margin: 0 15px 20px;
+        padding: 0;
+        border-style: none;
+        }
+
+        .payDiv .row 
+        {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        border-radius: 4px;
+        border: 1px solid black;
+        }
+
+        .payDiv .row
+        {
+        margin-bottom: 8px;
+        }
+
+        .payDiv label 
+        {
+        width: 15%;
+        min-width: 70px;
+        padding: 11px 0;
+        color: #000000;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 500;
+        }
+
+        .payDiv input, .payDiv button 
+        {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        outline: none;
+        border-style: none;
+        }
+
+        .payDiv input:-webkit-autofill 
+        {
+        -webkit-text-fill-color: #000000;
+        transition: background-color 100000000s;
+        -webkit-animation: 1ms void-animation-out;
+        }
+
+        .payDiv .StripeElement--webkit-autofill 
+        {
+        background: transparent !important;
+        }
+
+        .payDiv .StripeElement 
+        {
+        width: 100%;
+        padding: 8px;
+        }
+
+        .payDiv input 
+        {
+        width: 100%;
+        padding: 8px;
+        color: rgb(0, 0, 0);
+        background-color: transparent;
+        -webkit-animation: 1ms void-animation-out;
+        }
+
+        .payDiv input::-webkit-input-placeholder 
+        {
+        color: rgb(201, 199, 197)
+        }
+
+        .payDiv input::-moz-placeholder 
+        {
+        color: rgb(201, 199, 197)
+        }
+
+        .payDiv input:-ms-input-placeholder 
+        {
+        color: rgb(201, 199, 197)
+        }
+
+        .payDiv button 
+        {
+        width: calc(100% - 30px);
+        height: 40px;
+        margin: 5px 15px 0;
+        }
+
+        #submit
+        {
+            background-color: #5f779c;
+            border: none;
+        }
+
+        #submit:hover
+        {
+            background-color: #5f779c;
+            border: none;
+        }
+
+        #submit:disabled
+        {
+            background-color: rgb(201, 199, 197);
+            border: none;
+        }
+
+    </style>
+
+    <script>
+        'use strict';
+
+        if(document.getElementById("isError").innerHTML)
+        {
+            document.getElementById("noGatewayError").classList.remove('noShow');
+        }
+        else
+        {
+            document.getElementById("payForm").classList.remove('noShow');
+
+            let stripe = Stripe(document.getElementById("publicId").innerHTML);
+            let elements = stripe.elements();
+
+            let card = elements.create("card", {
+                iconStyle: 'solid',
+                style: {
+                    base: {
+                        iconColor: 'rgb(201, 199, 197)',
+                        color: '#000',
+                        fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
+                        fontSize: '16px',
+                        fontSmoothing: 'antialiased',
+
+                        ':-webkit-autofill': {
+                        color: '#000',
+                        },
+                        '::placeholder': {
+                        color: 'rgb(201, 199, 197)',
+                        },
+                    },
+                },
+            });
+            card.mount("#card-element");
+
+
+            card.on('change', ({error}) => {
+                let displayError = document.getElementById('card-errors');
+                if(error) 
+                {
+                    displayError.textContent = error.message;
+                    displayError.style.display = 'block';
+                    document.getElementById("submit").disabled = true;
+                } 
+                else 
+                {
+                    displayError.textContent = '';
+                    displayError.style.display = 'none';
+                    if(document.getElementById("nameOnCard").value.length > 0)
+                    {
+                        document.getElementById("submit").disabled = false;
+                    }
+                    else
+                    {
+                        document.getElementById("submit").disabled = true;
+                    }
+                }
+            });
+            
+            document.getElementById("nameOnCard").addEventListener('input', function(ev) {
+                if(document.getElementById("nameOnCard").value.length > 0)
+                {
+                    document.getElementById("submit").disabled = false;
+                }
+                else
+                {
+                    document.getElementById("submit").disabled = true;
+                }
+            });
+
+            //------------------------------
+            var form = document.getElementById('payment-form');
+
+
+            form.addEventListener('submit', function(ev) {
+                ev.preventDefault();
+
+                setSpinner(true);
+                document.getElementById("submit").disabled = true;
+                //console.log(document.getElementById("payInt").innerHTML);
+
+                stripe.confirmCardPayment(document.getElementById("payInt").innerHTML, 
+                    {
+                        payment_method: {
+                            card: card,
+                            billing_details: {
+                                name: document.getElementById("nameOnCard").value
+                            }
+                        }
+                    }).then(function(result) {
+                        console.log(result);
+                        if(result.error)
+                        {
+                            setSpinner(false);
+                            // Show error to your customer (e.g., insufficient funds)
+                            document.getElementById('card-errors').textContent = result.error.message;
+                            document.getElementById('card-errors').style.display = 'block';
+                            document.getElementById("submit").disabled = false;
+                        } 
+                        else 
+                        {
+                            // The payment has been processed!
+                            if(result.paymentIntent.status === 'requires_capture') 
+                            {
+                                // Show a success message to your customer
+                                // There's a risk of the customer closing the window before callback
+                                // execution. Set up a webhook or plugin to listen for the
+                                // payment_intent.succeeded event that handles any business critical
+                                // post-payment actions.
+                                submitSuccess(result.paymentIntent.id, result.paymentIntent.amount);
+                            }
+                        }
+                    });
+            });
+        }
+
+        /*** Method to Fire Event to LWC ***/
+        function submitSuccess(payId, amount) 
+        {
+            
+            let message = [];
+            message.success = true;
+            message.paymentId = payId;
+            message.amount = amount;
+            console.log('https://' + location.host);
+            window.parent.postMessage(message, 'https://' + location.host);
+            console.log(message);
+        }
+
+        function setSpinner(runSpinner)
+        {
+            // let message = [];
+            // message.setSpinner = true;
+            // message.boolVal = runSpinner;
+            if(runSpinner)
+            {
+                document.getElementById('spinner').classList.remove("slds-hide");
+            }
+            else
+            {
+                document.getElementById('spinner').classList.add("slds-hide");
+            }
+            //window.parent.postMessage(message, 'https://' + location.host);
+        }
+
+        //-------------------- COMMUNICATE WITH LWC END --------------------------
+    </script>
+</apex:page>

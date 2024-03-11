@@ -1,0 +1,83 @@
+<template>
+    <lightning-card>
+        <lightning-layout multiple-rows>
+
+            <div style="padding-top: 8px">
+                <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols"
+                    style="font-size: 14px;">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <template for:each={columns} for:item="column">
+                                <template lwc:if={column.displayColumn}>
+                                    <th key={column.fieldName}
+                                        class="slds-is-resizable slds-is-sortable slds-cell_action-mode"
+                                        style="height: 35px;">
+                                        <a class="slds-th__action slds-text-link_reset">
+                                            <div
+                                                class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                <template if:true={column.header}>
+                                                    <span title={column.label}>{column.label}</span>
+                                                </template>
+                                                <template if:false={column.header}>
+                                                    <span class="slds-truncate" style="text-align: right; width: 100%;"
+                                                        title={column.label}>{column.label}</span>
+                                                </template>
+                                            </div>
+                                        </a>
+                                        <div class="slds-resizable">
+                                            <span class="slds-resizable__handle">
+                                                <span class="slds-resizable__divider"></span>
+                                            </span>
+                                        </div>
+                                    </th>
+                                </template>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={overallStats} for:item="data">
+                            <tr key={data.id} class="slds-hint-parent" style="height: 35px;">
+                                <th class="slds-cell_action-mode" scope="row"> 
+                                        <div class="slds-truncate" >{data.busUnit}</div>
+                                </th>
+
+                                <td class="slds-cell_action-mode" role="gridcell">
+                                    <div class="slds-truncate" style="text-align: right;">
+                                        {data.TargetData}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode" role="gridcell">
+                                    <div class="slds-truncate" style="text-align: right;">
+                                        {data.OpenActualData}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode" role="gridcell">
+                                    <div class="slds-truncate" style="text-align: right;">
+                                        {data.ActualData}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode" role="gridcell">
+                                    <div class="slds-truncate" style="text-align: right;">
+                                        {data.VarianceData}
+                                        <template if:true={data.VarianceShowVarianceArrow}>
+                                            <template lwc:if={data.VarianceTargetAchieved}>
+                                                <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                    size="xx-small"></lightning-icon>
+                                            </template>
+
+                                            <template lwc:else>
+                                                <lightning-icon class="my-icon-down"
+                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                </lightning-icon>
+                                            </template> 
+                                        </template>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </lightning-layout>
+    </lightning-card>
+</template>

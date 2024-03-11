@@ -1,0 +1,12 @@
+<template>
+    <lightning-spinner
+        if:true={showSpinner}
+        alternative-text="Please Wait"
+        size="medium"
+        variant="brand">
+    </lightning-spinner>
+    
+    <template if:true={hasData}>
+       <iframe height="370px" width="100%" src={vfFullSource}></iframe> 
+    </template>
+</template>

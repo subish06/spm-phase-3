@@ -1,0 +1,16 @@
+.spinnerclass {
+    position: relative;
+    height:100px;
+  }
+
+.green-background {
+    background-color: green;
+}
+
+.red-background {
+    background-color: red;
+}
+
+.slds-checkbox_faux {
+  display: none !important;
+}

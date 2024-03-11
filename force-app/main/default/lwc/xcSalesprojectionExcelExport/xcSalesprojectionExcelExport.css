@@ -1,0 +1,6 @@
+.exp_align{
+        /* padding-left: 10px; */
+        padding-left: var(--lwc-spacingSmall,0.75rem);
+        padding-right: var(--lwc-spacingSmall,0.75rem);
+        width: 50%;
+    }

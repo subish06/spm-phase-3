@@ -1,0 +1,11 @@
+<template>
+    <template if:true={hasData}>
+        <h2 class="slds-p-around_x-small slds-text-title_caps">Account Credit</h2>
+        <div class="slds-box">
+            <div class="body slds-text-body_regular infoRow">
+                <span>Available Credit</span>
+                <lightning-formatted-number value={availableCredit} format-style="currency" currency-code="USD"></lightning-formatted-number>
+            </div>
+        </div>
+    </template>
+</template>

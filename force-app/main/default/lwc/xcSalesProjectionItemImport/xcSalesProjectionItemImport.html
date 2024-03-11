@@ -1,0 +1,19 @@
+<template>
+    <div class="slds-tabs_card">
+        
+        <h3 style="font-size: 1.2em;"><b>Update Sales Projections</b></h3>
+
+        <label for="fileSelect">Upload Excel file to update <b>existing</b> Sales Projections</label><br>
+        <div class="uploadContainer" style="padding:2%;">
+            <input id="fileSelect" class="upload" type="file" accept=".xlsx,.xls" onchange={handleUploadFinished} />  
+        </div>
+        <template for:each={filesUploaded} for:item="file">
+            <div key={file.name} class="slds-text-body_small">{file.name}</div>
+        </template>
+        <lightning-button variant="brand" label="Update Sales Projections" title="Update Sales Projections From Excel" onclick={handleClick} class="slds-m-left_x-small" disabled={disabledButton}></lightning-button>
+        <div if:true={isLoading} class="spinner">
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </div>
+    </div>
+    
+</template>

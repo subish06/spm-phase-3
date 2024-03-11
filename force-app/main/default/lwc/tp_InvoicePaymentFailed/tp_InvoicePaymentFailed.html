@@ -1,0 +1,16 @@
+<template> 
+    <div class="slds-box"> 
+        
+        <h1 class="slds-page-header__title slds-m-around_medium slds-align_absolute-center" style="font-size: 33px;font-weight: 600;">Invoive Payment Failed</h1>
+        <div class="slds-align_absolute-center"><lightning-icon icon-name="action:close" alternative-text="Payment Failed"  title="Invoice Not Paid"></lightning-icon></div><br/>
+        <div class="slds-text-heading_large slds-align_absolute-center">Invoice Payment is failed due to bad payment gateway response.</div>
+        <div class="slds-text-heading_large slds-align_absolute-center">{labels.TP_InvoiceSuccessPageBody2}</div>
+        </br>
+        </br>
+        </br>
+        <div>
+            <button class="slds-button slds-button_brand slds-align_absolute-center" onclick={navigateHome} title="Home">{labels.TP_InvoiceSuccessPageHomeButton}</button><br/>
+            <button class="slds-button slds-button_brand slds-align_absolute-center" onclick={navigateBack} title="Back">{labels.TP_InvoiceSuccessPageBackButton}</button>
+        </div>
+    </div> 
+</template>

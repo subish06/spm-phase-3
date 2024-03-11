@@ -1,0 +1,18 @@
+.rectangle {
+    display: flex;
+    flex-wrap: wrap;
+    width: 600px;
+    /* Adjust the width as per your requirement */
+    height: 200px;
+    /* Adjust the height as per your requirement */
+    float: right
+}
+
+.square {
+    flex-basis: 33.33%;
+    /* Adjust the flex-basis as per your requirement */
+    height: 75%;
+    /* Adjust the height as per your requirement */
+    border: 1px solid black;
+    /* Adjust the border properties as desired */
+}

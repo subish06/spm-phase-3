@@ -1,0 +1,19 @@
+<apex:component access="global" controller="XC_GiveawayApprovalRequestController">
+    <apex:attribute name="recordIdVal" description="" type="String" assignTo="{!recordId}"/>
+    <div>
+        Your gear giveaway request has been denied. Click here for details: <a href="{!detailLink}">Detail Link</a>
+    </div>
+    <div>Contact: {!giveaway.XC_Contact__r.Name}</div>
+    <div>Product(s):</div>
+    <ul style="margin-block-start: 0px; margin-block-end: 0px; margin-top: 0px; margin-bottom: 0px;">
+        <apex:repeat var="prod" value="{!giveawayProducts}">
+            <li style="margin-top: 0px; margin-bottom: 0px;">
+                {!prod.XC_Product__r.Name}
+            </li>
+        </apex:repeat>
+    </ul>
+
+    <p>Comments: {!approvalComments}</p>
+    
+
+</apex:component>

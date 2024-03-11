@@ -1,0 +1,76 @@
+<template>
+    <!--Adding a spinner-->
+    <template if:true={loading}>
+        <div class="spinner">
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </div>
+    </template>
+
+    <div class="slds-text-heading_large slds-p-bottom_medium">
+        <h1>
+            My Orders
+        </h1>
+    </div>
+
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_2-of-12 slds-m-around_medium">
+            <lightning-input type="date" name="Order Date Start" class="start-date" label="Order Date Start" date-style="short" value = {startDate}
+            onchange={handleDateChange}></lightning-input>
+        </div>
+        <div class="slds-col slds-size_2-of-12 slds-m-around_medium">
+            <lightning-input type="date" name="Order Date End" class="end-date" label="Order Date End" date-style="short" value = {endDate}
+                onchange={handleDateChange}></lightning-input>
+        </div>
+        <div class="slds-col slds-size_2-of-12 slds-m-around_medium">
+            <lightning-input type="string" name="Order Item SKU" class="sku-number" label="Order Item SKU" value=""
+                onchange={handleSKUNo}></lightning-input>
+        </div>
+
+        <div class="slds-col slds-size_1-of-12 filterCss">
+            <lightning-button variant="brand" label="Apply" title="Apply Filters" onclick={getOrder}
+                class="slds-m-left_x-small applyButton"></lightning-button>
+        </div>
+        <div class="slds-col slds-size_1-of-12 filterCss">
+            <lightning-button variant="base" label="Reset" title="Reset Filter" onclick={handleReset}>
+            </lightning-button>
+        </div>
+
+        <div class="slds-col slds-size_1-of-12 filterCss">
+            <lightning-button type = "Button" variant="brand" class="slds-m-top_x-small" label="Export" title="Export"
+                onclick={exportDataToCsv}>
+            </lightning-button>
+        </div>
+    </div>
+  
+    <div class="slds-grid slds-gutters">
+        <c-x-c-custom-datatable key-field="id" data={orderData} columns={columns} onstartreorder={startReorder} hide-checkbox-column
+        sorted-by={sortBy}
+        sorted-direction={sortDirection}
+        onsort={doSorting}>        
+        </c-x-c-custom-datatable>
+    </div>
+    <template if:true={totalPage}>
+    <lightning-layout horizontal-align="space">
+        <lightning-layout-item flexibility="auto">
+            <lightning-button 
+            disabled={disablePrevious}
+                            label="Previous" 
+                icon-name="utility:chevronleft" 
+                onclick={previousHandler}>
+            </lightning-button>
+        </lightning-layout-item>
+         <lightning-layout-item flexibility="auto">
+            Page {pageNumber} of {totalPage}
+        </lightning-layout-item>
+        <lightning-layout-item flexibility="auto">
+            <lightning-button 
+            disabled={disableNext}
+                label="Next" 
+                icon-name="utility:chevronright" 
+                icon-position="right"
+                onclick={nextHandler}>
+            </lightning-button>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
+</template>

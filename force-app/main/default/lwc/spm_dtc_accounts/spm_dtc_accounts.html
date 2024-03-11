@@ -1,0 +1,70 @@
+<template>
+    <lightning-layout multiple-rows>
+        <lightning-layout-item size="2" if:true={showAccountSearch} style="overflow: auto;">
+            <div style="overflow-y: scroll;max-height: fit-content;height: 150vh;">
+                <div class="slds-p-around_small" style="padding-right: 12px;">
+                    <div style="padding:8px">
+                        <lightning-input label="" variant="label-hidden" type="Search" name="Search"
+                            onchange={handleSearch} placeholder="Search.."></lightning-input>
+                    </div>
+                    <template for:each={accountlist} for:item="item">
+                        <div key={item.accId} class={item.class} style="margin-top: 10px;">
+                            <a onclick={handleNameClick} data-acc-id={item.accId} data-acc-name={item.accName}
+                                data-target-amount={item.targetAmount} data-actual-amount={item.actualAmount}
+                                data-variance-amount={item.varianceAmount} data-actual={item.actual}
+                                data-target={item.target}>
+                                <div class="slds-truncate" style="white-space: normal;" title={item.accName}>
+                                    <b>{item.accName}</b></div>
+                            </a>
+                            <div style="padding-top: 4px;padding-bottom: 4px;">Target
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {item.targetAmount}
+                            </div>
+                            <div style="color: #489f86;padding-top: 4px;padding-bottom: 4px;">
+                                Actual &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {item.actualAmount}
+                            </div>
+                            <div style="color: #ff9d5c;">Variance &nbsp;: {item.varianceAmount}
+                                <template if:true={item.displayArrow}>
+                                    <template if:true={item.varianceArrow}>
+                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup" size="xx-small">
+                                        </lightning-icon>
+                                    </template>
+                                    <template if:false={item.varianceArrow}>
+                                        <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
+                                            size="xx-small">
+                                        </lightning-icon>
+                                    </template>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size={viewSize} class="slds-border_left">
+            <template if:true={showSec}>
+                <div style="padding-top:16px; position: relative;">
+                    <div class="dropIconContainer">
+                        <a id="utility" class="dropIcon" onclick={handleSearchToggle}>
+                            <lightning-icon style="position: absolute;" size="xx-small" icon-name={iconName}
+                                alternative-text="Expand" title={title}></lightning-icon>
+                        </a>
+                    </div>
+                </div>
+
+                <div lwc:if={showSpinner} class="slds-is-relative" style="padding-top: 32px;">
+                    <lightning-spinner variant="brand" size="medium">
+                    </lightning-spinner>
+                </div>
+
+                <div lwc:else>
+                    <c-spm_dtc_account_summary financial-year={financialYear} selected-account={selectedAcc}
+                        sub-channel={subChannel} account-name={selectedAccName} account-target={selectedTargetAmount}
+                        account-actuals={selectedActualAmount} logged-user ={loggedUser} account-variance={selectedVarianceAmount}
+                        target-amount={selectedTarget} actual-amount={selectedActual} hide-button={hideButton}
+                        currency-symbol={currencySymbol}>
+                    </c-spm_dtc_account_summary>
+                </div>
+            </template>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

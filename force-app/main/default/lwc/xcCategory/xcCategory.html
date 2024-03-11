@@ -1,0 +1,202 @@
+<template>
+
+
+
+	<div>
+
+		<div>
+
+			<lightning-card title="Categories" icon-name="standard:category">
+
+				<!-- <lightning-accordion allow-multiple-sections-open>
+
+
+					<template for:each={categoryHierarchy} for:item="item">
+						<lightning-accordion-section name={item.Name} key={item.Id} data-id={item.Id} label={item.Name}>
+							<template for:each={item.subCategory} for:item="itm">
+
+								<ul style="slds-is-relative;" key={itm.Id} class="slds-dropdown__list" role="menu"
+									aria-label="Menu Item Three">
+									<li>
+										<b>{itm.Name}</b>
+									</li>
+
+									<template for:each={itm.subSubCategory} for:item="obj">
+										<li style="padding-left:20px;" onclick={handleNavigateSubCategory}
+											data-id={obj.Id} key={obj.Id}>
+											{obj.Name}
+
+										</li>
+									</template>
+
+								</ul>
+							</template>
+
+							<template if:true={showNoSubCategory}>
+								<ul>
+									<li if:true={showNoSubCategory} class="slds-dropdown__item" role="presentation">
+										No Sub-Category Found
+									</li>
+
+								</ul>
+
+							</template>
+						</lightning-accordion-section>
+					</template>
+				</lightning-accordion> -->
+
+				<lightning-accordion allow-multiple-sections-open>
+					<template for:each={categoryHierarchy} for:item="item">
+						<lightning-accordion-section label={item.Name} name key={item.Id} data-section="section1"
+							onclick={handleParentSection} class="parentSection">
+							<template if:true={item.isContainSecondLevel}>
+								<span style="padding-left: 35px;font-size: 16px;">All</span>
+
+							</template>
+
+							<lightning-accordion allow-multiple-sections-open>
+								<template if:true={item.subCategory} for:each={item.subCategory} for:item="itm">
+									<lightning-accordion-section key={itm.Id} label={itm.Name} data-section="section1">
+										<template for:each={itm.subSubCategory} for:item="obj">
+											<li style="padding-left:20px;" onclick={handleNavigateSubCategory}
+												data-id={obj.Id} key={obj.Id}>
+												{obj.Name}
+
+											</li>
+										</template>
+									</lightning-accordion-section>
+								</template>
+							</lightning-accordion>
+						</lightning-accordion-section>
+					</template>
+				</lightning-accordion>
+
+
+
+
+			</lightning-card>
+
+		</div>
+
+		<div></div>
+
+		<div>
+
+
+		</div>
+
+	</div>
+
+
+
+
+
+
+	<!-- <lightning-accordion onsectiontoggle={handleSectionToggle}>
+		<template for:each={sections} for:item="section">
+		  <lightning-accordion-section
+			key={section.id}
+			label={section.label}
+			name={section.id}
+			open={section.open}
+		  >
+
+	</lightning-accordion-section>
+</template>
+</lightning-accordion> -->
+
+
+
+
+
+
+	<!-- <div class="slds-dropdown-trigger ">
+									<label for="profileMenuCheck" class="">Test Name</label>
+									<input type="checkbox" id="profileMenuCheck" name="profileMenuCheck">
+									<div
+										class="slds-dropdown slds-dropdown--left slds-dropdown--actions slds-dropdown--menu slds-nubbin_left-top">
+										<ul class="slds-dropdown__list" role="menu">
+											<li id="menu1" href="#" class="slds-dropdown__item">
+												<a onclick={redirectToProfileUrl} role="menuitemradio">
+													<p class="slds-truncate">
+														<i class="ion  ion-checkmark  slds-m-right--x-small"></i>Profile
+													</p>
+												</a>
+											</li>
+										</ul>
+									</div>
+		</div> -->
+
+
+
+	<!-- <div style="display:flex;">
+
+		<table style="width:100%">
+
+
+
+			<tr>
+				<td style="width: 200px;height: 130px;border:1px solid black;">Emil</td>
+				<td style="width: 200px;height: 130px;border:1px solid black;">Tobias</td>
+				<td style="width: 200px;height: 130px;border:1px solid black;">Linus</td>
+			</tr>
+			<tr>
+				<td style="width: 200px;height: 130px;border:1px solid black;"></td>
+				<td style="width: 200px;height: 130px;border:1px solid black;">14</td>
+				<td style="width: 200px;height: 130px;border:1px solid black;">10</td>
+			</tr>
+
+
+		</table>
+	</div> -->
+
+
+
+	<!-- <img src="/AllAxcess/s/sfsites/c/cms/delivery/media/MCEGHN5RWWGRGQRFKXEH4AD5Q3QM?recordId=01t5e000002xV3mAAE" alt="Flowers in Chania" width="460" height="345"> -->
+
+
+
+
+
+	<!-- <c-xc-category-submenu record-id={recordId}></c-xc-category-submenu> -->
+
+	<ul class="slds-accordion">
+		<template for:each={categoryHierarchy} for:item="item">
+			<li key={item.Id} class="slds-accordion__list-item">
+				<section class="slds-accordion__section " data-id={item.Id} onclick={handleClickhere}>
+					<div class="slds-accordion__summary">
+						<h2 class="slds-accordion__summary-heading">
+							<button class="slds-button slds-button_reset slds-accordion__summary-action"
+								aria-controls="referenceId-42" aria-expanded="true" title="Accordion summary">
+								<svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left slds-icon slds-icon-text-default slds-icon_x-small"
+									focusable="false" data-key="switch" aria-hidden="true" viewBox="0 0 52 52"
+									part="icon">
+									<g>
+										<path
+											d="M47.6 17.8L27.1 38.5c-.6.6-1.6.6-2.2 0L4.4 17.8c-.6-.6-.6-1.6 0-2.2l2.2-2.2c.6-.6 1.6-.6 2.2 0l16.1 16.3c.6.6 1.6.6 2.2 0l16.1-16.3c.6-.6 1.6-.6 2.2 0l2.2 2.2c.5.7.5 1.6 0 2.2z">
+										</path>
+									</g>
+								</svg>
+								<span class="slds-accordion__summary-content">{item.Name}</span>
+							</button>
+						</h2>
+					</div>
+					<div class="slds-accordion__content" id="referenceId-42">
+
+
+					</div>
+				</section>
+			</li>
+		</template>
+	</ul>
+
+
+
+
+
+
+
+
+
+
+</template>

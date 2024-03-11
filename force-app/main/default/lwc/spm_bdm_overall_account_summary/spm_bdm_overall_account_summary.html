@@ -1,0 +1,40 @@
+<template>
+     <lightning-layout multiple-rows>
+        <lightning-layout-item size ="10"></lightning-layout-item>
+        <lightning-layout-item size ="2" class="slds-float_right slds-p-around_x-small">
+            <lightning-input class = "toggleclass" type="toggle" label="Summary View" onchange={handleToggleChange}
+                message-toggle-active='' message-toggle-inactive=''></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size = "12">
+        <div class="slds-p-around_x-small">
+
+            <template lwc:if= {isSummaryScreen}>
+                <lightning-tree-grid columns={gridColumns} data={gridData} key-field="name" expanded-rows={gridExpandedRows} hide-checkbox-column>
+                </lightning-tree-grid>
+            </template>
+
+            <template lwc:else>
+                <lightning-tabset variant="scoped">
+                    <lightning-tab label="Summary">
+                        <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+                            <lightning-accordion-section name="Target" label="Target">
+                                <lightning-datatable key-field="id" data={tarData} columns={columns} hide-checkbox-column>
+                                </lightning-datatable>
+                            </lightning-accordion-section>
+                            <lightning-accordion-section name="Order" label="Order">
+                                <lightning-datatable key-field="id" data={ordData} columns={columns} hide-checkbox-column>
+                                </lightning-datatable>
+                            </lightning-accordion-section>
+                            <lightning-accordion-section name="Variance" label="Variance">
+                                <lightning-datatable key-field="id" data={varData} columns={columns} hide-checkbox-column>
+                                </lightning-datatable>
+                            </lightning-accordion-section>
+                        </lightning-accordion>
+                    </lightning-tab>
+                </lightning-tabset>
+            </template>
+
+        </div>
+    </lightning-layout-item>
+    </lightning-layout>
+</template>

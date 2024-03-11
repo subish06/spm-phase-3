@@ -1,0 +1,14 @@
+.colorIconRed{
+  color: #EA001E;
+  --sds-c-icon-color-foreground-default: #EA001E;
+}
+.colorIconGreen{
+  color: #2E844A;
+  --sds-c-icon-color-foreground-default: #2E844A;
+}
+.styleBold{
+  font-weight: 700;
+}
+.lastRowTotal table tr:last-child{
+  font-weight: 700;
+}

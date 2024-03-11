@@ -1,0 +1,801 @@
+<template>
+    <lightning-layout multiple-rows>
+        <lightning-layout-item size="3" class="slds-float_left" style="padding-left:20px;">
+            Account Name:<b> {accountName}</b>
+        </lightning-layout-item>
+        <lightning-layout-item size="6" class="slds-align_absolute-center" style="padding-bottom: 12px;">
+            <div>Account - Target :<b> {accountTarget}</b> / Actual :<b> {accountActuals}</b> / Variance : <b>
+                    {accountVariance}</b>
+                <template lwc:if={displayArrow}>
+                    <template lwc:if={varianceArrow}>
+                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup" size="xx-small">
+                        </lightning-icon>
+                    </template>
+                    <template lwc:else>
+                        <lightning-icon class="my-icon-down" icon-name="utility:arrowdown" size="xx-small">
+                        </lightning-icon>
+                    </template>
+                </template>
+            </div>
+
+        </lightning-layout-item>
+        <lightning-layout-item size="3" class="slds-float_right">
+            <lightning-input class="toggleclass" type="toggle" label="Summary View" onchange={handleToggleChange}
+                message-toggle-active='' message-toggle-inactive=''></lightning-input>
+        </lightning-layout-item>
+        <template lwc:if={hideButton}> </template>
+        <template lwc:else>
+        <lightning-layout-item size="8"
+            style="padding-bottom: 10px;padding-top: 10px;">
+            <template lwc:if={isCurrentYear}>
+                <lightning-button-group style="float: right;padding-right: 60px;">
+                    <template lwc:if={downloadingPrompt}>
+
+                        <lightning-button label="Downloading..." icon-name="utility:download" disabled>
+                        </lightning-button>
+
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+                            aria-describedby="modal-content-id-2"
+                            class="slds-modal slds-fade-in-open slds-modal_small ">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">
+                                        Downloading
+                                        Data</h2>
+                                </header>
+
+                                <div class="slds-modal__content slds-p-around_medium downloadspinnerclass"
+                                    id="modal-content-id-2">
+                                    <div style="display:flex; justify-content:center;">
+                                        <p style=" font-size:large;">Data download in progress. Please avoid refreshing
+                                            or
+                                            using the back button.</p>
+                                    </div>
+                                    <div class="slds-p-around_medium">
+                                        <lightning-progress-bar value={progressVal} size="large" variant="circular">
+                                        </lightning-progress-bar>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+
+                    </template>
+                    <template lwc:else >
+                        <lightning-button label="All BU Download" icon-name="utility:download" onclick={downloadCSV}>
+                        </lightning-button>
+                    </template>
+                    <!-- <template lwc:if={uploadDisabled}>  -->
+                        <lightning-button label="All BU Upload" onclick={openUploadDialog} icon-name="utility:upload">
+                        </lightning-button>
+
+                    <template lwc:if={showUploadDialog}>
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open ">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <template lwc:if={showSpinner}></template>
+                                    <template lwc:else>
+                                        <button
+                                            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                            title="Close" onclick={handleUploadWindow}>
+                                            <lightning-icon icon-name="utility:close" alternative-text="close"
+                                                variant="inverse" size="small" onclick={handleUploadWindow}>
+                                            </lightning-icon>
+                                            <span class="slds-assistive-text">Close</span>
+                                        </button>
+
+                                    </template>
+                                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Upload
+                                        CSV</h2>
+                                </header>
+
+                                <div class="slds-modal__content slds-p-around_medium spinnerclass"
+                                    id="modal-content-id-1">
+                                    <template lwc:if={showSpinner}>
+                                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03"
+                                            aria-modal="true" aria-describedby="modal-content-id-3"
+                                            class="slds-modal slds-fade-in-open slds-modal_small ">
+                                            <div class="slds-modal__container">
+                                                <header class="slds-modal__header">
+                                                    <h2 id="modal-heading-03"
+                                                        class="slds-text-heading_medium slds-hyphenate">Uploading Data
+                                                    </h2>
+                                                </header>
+
+                                                <div class="slds-modal__content slds-p-around_medium downloadspinnerclass"
+                                                    id="modal-content-id-3">
+
+                                                    <div style="display:flex; justify-content:center;">
+                                                        <p style=" font-size:large;">Data Upload in progress. Please
+                                                            avoid
+                                                            refreshing or using the back button.</p>
+                                                    </div>
+                                                    <div class="slds-p-around_medium">
+                                                        <lightning-progress-bar value={progressVal} size="large"
+                                                            variant="circular"></lightning-progress-bar>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </section>
+                                    </template>
+
+                                    <template lwc:else>
+                                        <div class="custom-input-container">
+                                            <lightning-input style="display:flex; justify-content:center;" type="file"
+                                                accept=".csv" onchange={handleFileUpload} class="file-selector-image">
+                                            </lightning-input>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <footer class="slds-modal__footer">
+                                    <button class="slds-button slds-button_neutral"
+                                        onclick={handleUploadWindow}>Cancel</button>
+                                </footer>
+
+                            </div>
+                        </section>
+
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+
+                    <template lwc:if={isPending}>
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                            aria-describedby="modal-content-id-4"
+                            class="slds-modal slds-fade-in-open slds-modal_small ">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <button
+                                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                        title="Close" onclick={showPendingWindow}>
+                                        <lightning-icon icon-name="utility:close" alternative-text="close"
+                                            variant="inverse" size="small" onclick={showPendingWindow}></lightning-icon>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button>
+                                    <h2 id="modal-heading-04" class="slds-text-heading_medium slds-hyphenate">Uploading
+                                        Pending Data</h2>
+                                </header>
+
+                                <div class="slds-modal__content slds-p-around_medium " id="modal-content-id-4">
+
+                                    <div style="display:flex; justify-content:center;">
+                                        <p class="slds-text-align_center" style="font-size:medium;">Your previous upload
+                                            is currently in progress, with <b>{isPendingSize}</b> pending data. Once the
+                                            pending data is complete, you can upload new data.
+                                            For further assistance, please contact your system administrator. </p>
+                                    </div>
+                                </div>
+                                <footer class="slds-modal__footer">
+                                    <button class="slds-button slds-button_neutral"
+                                        onclick={showPendingWindow}>Cancel</button>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+
+                     <template lwc:if={showWarning}>
+                            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-05" aria-modal="true"
+                                aria-describedby="modal-content-id-5" class="slds-modal slds-fade-in-open ">
+                                <div class="slds-modal__container">
+                                    <header class="slds-modal__header">
+                                        <button
+                                            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                            title="Close" onclick={handleShowWarning}>
+                                            <lightning-icon icon-name="utility:close" alternative-text="close"
+                                                variant="inverse" size="small" onclick={handleShowWarning}>
+                                            </lightning-icon>
+                                            <span class="slds-assistive-text">Close</span>
+                                        </button>
+                                        <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">
+                                            Alert</h2>
+                                    </header>
+
+                                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-5">
+                                        <div style="display:flex; justify-content:center;">
+                                            <p class="slds-text-align_center" style="font-size:medium;">
+                                            All records updated successfully. Except Unavailable products will remain
+                                                unaltered and are excluded from updates.</p>
+                                        </div>
+                                    </div>
+
+                                    <footer class="slds-modal__footer">
+                                        <button class="slds-button slds-button_neutral"
+                                            onclick={handleShowWarning}>Ok</button>
+                                    </footer>
+
+                                </div>
+                            </section>
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+                        </template>
+
+                </lightning-button-group>
+            </template>
+            <template lwc:else></template>
+
+        </lightning-layout-item> 
+        <lightning-layout-item size="4" style="padding-bottom: 10px;padding-top: 10px;" class="slds-float_right">
+            <lightning-button label="Refresh" style="float: right;margin-right: 10px;" icon-name="utility:refresh" onclick={refreshProdTable}>
+            </lightning-button>
+        </lightning-layout-item>
+        </template>
+
+        <lightning-layout-item size="2"></lightning-layout-item>
+        <lightning-layout-item size="8">
+            <template lwc:if={isPendingData}>
+                <div style = "text-align: center;padding-right: 15px;color: green;" >
+                    <p>Data is still processing with the pending data of <b>{isPendingSize}</b>.</p>
+                    </div>
+            </template>
+        </lightning-layout-item>
+        <lightning-layout-item size="2"></lightning-layout-item> 
+    
+
+    </lightning-layout>
+
+    <div class="slds-p-around_x-small">
+
+        <template if:false={isSummaryScrnSelected}>
+            <lightning-tabset variant="scoped" active-tab-value="Summary">
+                <lightning-tab label="Summary" value= "Summary">
+                    <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+                        <lightning-accordion-section name="Target" label="Target">
+                            <div style="padding-top: 8px;overflow-x:scroll;overflow-y:hidden;">
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <template for:each={columns} for:item="column">
+                                                <th key={column.fieldName}
+                                                    class="slds-is-resizable slds-is-sortable slds-cell_action-mode"
+                                                    style="height: 40px;">
+                                                    <a class="slds-th__action slds-text-link_reset">
+                                                        <div
+                                                            class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                            <span class="slds-truncate"
+                                                                title="Business Unit / Month">{column.label}</span>
+                                                        </div>
+                                                    </a>
+                                                    <div class="slds-resizable">
+                                                        <span class="slds-resizable__handle">
+                                                            <span class="slds-resizable__divider"></span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={targetData} for:item="data">
+                                            <tr key={data.id} class="slds-hint-parent" style="height: 40px;">
+                                                <th class="slds-cell_action-mode" scope="row">
+                                                    <div class="slds-truncate">
+                                                        {data.busUnit}
+                                                    </div>
+                                                </th>
+
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.AprData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.MayData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.JunData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.JulData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.AugData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.SepData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.OctData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.NovData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.DecData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.JanData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.FebData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.MarData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate"
+                                                        style="text-align: right;font-weight: bolder;">
+                                                        {data.totalData}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </lightning-accordion-section>
+
+                        <lightning-accordion-section name="Order" label="Order">
+                            <div style="padding-top: 8px;overflow-x:scroll;overflow-y:hidden;">
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <template for:each={columns} for:item="column">
+                                                <th key={column.fieldName}
+                                                    class="slds-is-resizable slds-is-sortable slds-cell_action-mode"
+                                                    style="height: 40px;">
+                                                    <a class="slds-th__action slds-text-link_reset">
+                                                        <div
+                                                            class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                            <span class="slds-truncate"
+                                                                title="Business Unit / Month">{column.label}</span>
+                                                        </div>
+                                                    </a>
+                                                    <div class="slds-resizable">
+                                                        <span class="slds-resizable__handle">
+                                                            <span class="slds-resizable__divider"></span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={actualData} for:item="data">
+                                            <tr key={data.id} class="slds-hint-parent" style="height: 40px;">
+                                                <th class="slds-cell_action-mode" scope="row">
+                                                    <div class="slds-truncate">
+                                                        {data.busUnit}
+                                                    </div>
+                                                </th>
+
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.AprData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.MayData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.JunData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.JulData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.AugData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.SepData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.OctData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.NovData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.DecData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.JanData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.FebData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+
+                                                        {data.MarData}
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate"
+                                                        style="text-align: right;font-weight: bolder;">
+                                                        {data.totalData}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </lightning-accordion-section>
+
+                        <lightning-accordion-section name="Variance" label="Variance">
+
+                            <div style="padding-top: 8px;overflow-x:scroll;overflow-y:hidden;">
+                                <!-- <table
+                                        class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols"
+                                        style="font-size: 14px;"> -->
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <template for:each={columns} for:item="column">
+                                                <th key={column.fieldName}
+                                                    class="slds-is-resizable slds-is-sortable slds-cell_action-mode"
+                                                    style="height: 40px;">
+                                                    <a class="slds-th__action slds-text-link_reset">
+                                                        <div
+                                                            class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                            <span class="slds-truncate"
+                                                                title="Business Unit / Month">{column.label}</span>
+                                                        </div>
+                                                    </a>
+                                                    <div class="slds-resizable">
+                                                        <span class="slds-resizable__handle">
+                                                            <span class="slds-resizable__divider"></span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={varianceData} for:item="data">
+                                            <tr key={data.id} class="slds-hint-parent" style="height: 40px;">
+                                                <th class="slds-cell_action-mode" scope="row">
+                                                    <div class="slds-truncate">
+                                                        {data.busUnit}
+                                                    </div>
+                                                </th>
+
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.AprData}
+                                                        <template if:true={data.AprShowVarianceArrow}>
+
+                                                            <template lwc:if={data.AprTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.MayData}
+
+                                                        <template if:true={data.MayShowVarianceArrow}>
+
+                                                            <template lwc:if={data.MayTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.JunData}
+                                                        <template if:true={data.JunShowVarianceArrow}>
+
+                                                            <template lwc:if={data.JunTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.JulData}
+                                                        <template if:true={data.JulShowVarianceArrow}>
+
+                                                            <template lwc:if={data.JulTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.AugData}
+                                                        <template if:true={data.AugShowVarianceArrow}>
+
+                                                            <template lwc:if={data.AugTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.SepData}
+                                                        <template if:true={data.SepShowVarianceArrow}>
+
+                                                            <template lwc:if={data.SepTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.OctData}
+                                                        <template if:true={data.OctShowVarianceArrow}>
+
+                                                            <template lwc:if={data.OctTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.NovData}
+                                                        <template if:true={data.NovShowVarianceArrow}>
+
+                                                            <template lwc:if={data.NovTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.DecData}
+                                                        <template if:true={data.DecShowVarianceArrow}>
+
+                                                            <template lwc:if={data.DecTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.JanData}
+                                                        <template if:true={data.JanShowVarianceArrow}>
+
+                                                            <template lwc:if={data.JanTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.FebData}
+                                                        <template if:true={data.FebShowVarianceArrow}>
+
+                                                            <template lwc:if={data.FebTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate" style="text-align: right;">
+                                                        {data.MarData}
+                                                        <template if:true={data.MarShowVarianceArrow}>
+
+                                                            <template lwc:if={data.MarTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-cell_action-mode" role="gridcell">
+                                                    <div class="slds-truncate"
+                                                        style="text-align: right;font-weight: bolder;">
+                                                        {data.totalData}
+                                                        <template if:true={data.totalShowVarianceArrow}>
+
+                                                            <template lwc:if={data.totalTargetAchieved}>
+                                                                <lightning-icon class="my-icon-up"
+                                                                    icon-name="utility:arrowup" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <lightning-icon class="my-icon-down"
+                                                                    icon-name="utility:arrowdown" size="xx-small">
+                                                                </lightning-icon>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+
+                </lightning-tab>
+
+                <template for:each={businessUnits} for:item="businessUnit">
+                    <lightning-tab key={businessUnit} label={businessUnit} value={businessUnit}>
+                        <c-spm_bdm_product_summary bus-unit-name={businessUnit} account-id={selectedAccount}
+                            financial-year={financialYear} current-b-d-m={currentBDM} refresh-table={refreshTable}
+                            currency-symbol={currencySymbol} hide-button={hideButton} account-name={accountName}
+                            is-pending-data={isPendingData} onpendingchange={pendingTarUpload} oncustomevent={handleCustomEvent}>
+                        </c-spm_bdm_product_summary>
+                        <!-- value={tempActiveTabValue}> -->
+
+                        <!-- <template lwc:if={refreshTable}>
+                            <c-spm_bdm_product_table bus-unit-name={businessUnit} refresh-table={refreshTable} account-id={selectedAccount} 
+                            financial-year={financialYear} currency-symbol={currencySymbol} account-name={accountName}>
+                             </c-spm_bdm_product_table>
+                        </template> -->
+                    </lightning-tab>
+                </template>
+            </lightning-tabset>
+
+        </template>
+        <template if:true={isSummaryScrnSelected}>
+            <lightning-tree-grid columns={gridColumns} data={summaryScreenData} expanded-rows={gridExpandedRows}
+                key-field="id" hide-checkbox-column></lightning-tree-grid>
+        </template>
+
+    </div>
+</template>

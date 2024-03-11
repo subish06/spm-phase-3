@@ -1,0 +1,340 @@
+<template>
+    <div class="slds-clearfix">
+        <div class="slds-clearfix" style="padding-bottom: 12px;">
+            <div class="slds-float_left">
+                <div>BU - Target :<b> {targetAmt}</b> / Actual :<b> {actualAmt}</b> / Variance :<b> {varianceAmt}</b>
+                    <template lwc:if={busUnitShowVarianceArrow}>
+                        <template lwc:if={busUnitVarianceArrow}>
+                            <lightning-icon class="my-icon-up" icon-name="utility:arrowup" size="xx-small">
+                            </lightning-icon>
+                        </template>
+                        <template lwc:else>
+                            <lightning-icon class="my-icon-down" icon-name="utility:arrowdown" size="xx-small">
+                            </lightning-icon>
+                        </template>
+                    </template>
+                </div>
+            </div>
+            <div class="slds-float_right">
+                <div>{selectedMonth} - Target :<b> {monthTargetAmt}</b> / Actual :<b> {monthActualAmt}</b> / Variance :
+                    <b> {monthVarianceAmt}</b>
+                    <template lwc:if={monthTargetShowVarianceArrow}>
+                        <template lwc:if={monthTargetArrow}>
+                            <lightning-icon class="my-icon-up" icon-name="utility:arrowup" size="xx-small">
+                            </lightning-icon>
+                        </template>
+                        <template lwc:else>
+                            <lightning-icon class="my-icon-down" icon-name="utility:arrowdown" size="xx-small">
+                            </lightning-icon>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <lightning-layout>
+            <lightning-layout-item size="4">
+                <lightning-input placeholder="Product Code" value={ProdCode} onchange={handleProdCodeChange}
+                    type="search" label="" variant="label-hidden"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" style="padding-left: 10px;">
+                <lightning-input placeholder="Product Description" value={ProdDescription}
+                    onchange={handleProdDescriptionChange} type="search" label="" variant="label-hidden">
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="4" style="padding-left: 10px;">
+                <div>
+                    <lightning-combobox placeholder="Select Month" label="Month" variant="label-hidden"
+                        options={monthOptions} value={selectedMonth} onchange={handleMonthChange}></lightning-combobox>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+
+    <div class="slds-clearfix" style="padding-top: 12px;">
+        <div class="slds-float_left">
+            <div>Order Commit - Target :<b>{monthOrdCommitTarAmt}</b> / Variance :<b> {monthOrdCommitVarAmt} </b>
+                <template lwc:if={monthOrdShowVarianceArrow}>
+                    <template lwc:if={monthOrdVarianceArrow}>
+                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup" size="xx-small">
+                        </lightning-icon>
+                    </template>
+                    <template lwc:else>
+                        <lightning-icon class="my-icon-down" icon-name="utility:arrowdown" size="xx-small">
+                        </lightning-icon>
+                    </template>
+                </template>
+            </div>
+            <lightning-input type="checkbox" label="Is Available for Commitment" name="Is Available for Commitment"
+                checked onchange={handleCheckboxChange}>
+            </lightning-input>
+        </div>
+        <!-- <template lwc:if={hideButton}> </template>
+        <template lwc:else> -->
+            <div class="slds-float_right">
+                <template lwc:if={isCurrentYear}>
+                    <lightning-button-group>
+                        <template lwc:if={downloadingPrompt}>
+
+                            <lightning-button label="Downloading..." icon-name="utility:download" disabled>
+                            </lightning-button>
+
+                            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+                                aria-describedby="modal-content-id-2"
+                                class="slds-modal slds-fade-in-open slds-modal_small ">
+                                <div class="slds-modal__container">
+                                    <header class="slds-modal__header">
+                                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">
+                                            Downloading
+                                            Data</h2>
+                                    </header>
+
+                                    <div class="slds-modal__content slds-p-around_medium downloadspinnerclass"
+                                        id="modal-content-id-2">
+                                        <div style="display:flex; justify-content:center;">
+                                            <p style=" font-size:large;">Data download in progress. Please avoid
+                                                refreshing or
+                                                using the back button.</p>
+                                        </div>
+                                        <div class="slds-p-around_medium">
+                                            <lightning-progress-bar value={progressVal} size="large" variant="circular">
+                                            </lightning-progress-bar>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </section>
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+
+                        </template>
+                        <template lwc:else>
+                            <lightning-button label="BU Download" icon-name="utility:download" onclick={downloadCSV}>
+                            </lightning-button>
+                        </template>
+                        <lightning-button label="BU Upload" onclick={openUploadDialog} icon-name="utility:upload">
+                        </lightning-button>
+
+                        <template lwc:if={showUploadDialog}>
+                            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open ">
+                                <div class="slds-modal__container">
+                                    <header class="slds-modal__header">
+                                        <template lwc:if={showSpinner}></template>
+                                        <template lwc:else>
+                                            <button
+                                                class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                                title="Close" onclick={handleUploadDialog}>
+                                                <lightning-icon icon-name="utility:close" alternative-text="close"
+                                                    variant="inverse" size="small" onclick={handleUploadDialog}>
+                                                </lightning-icon>
+                                                <span class="slds-assistive-text">Close</span>
+                                            </button>
+
+                                        </template>
+                                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Upload
+                                            CSV</h2>
+                                    </header>
+
+                                    <div class="slds-modal__content slds-p-around_medium spinnerclass"
+                                        id="modal-content-id-1">
+                                        <template lwc:if={showSpinner}>
+                                            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03"
+                                                aria-modal="true" aria-describedby="modal-content-id-3"
+                                                class="slds-modal slds-fade-in-open slds-modal_small ">
+                                                <div class="slds-modal__container">
+                                                    <header class="slds-modal__header">
+                                                        <h2 id="modal-heading-03"
+                                                            class="slds-text-heading_medium slds-hyphenate">Uploading
+                                                            Data</h2>
+                                                    </header>
+
+                                                    <div class="slds-modal__content slds-p-around_medium downloadspinnerclass"
+                                                        id="modal-content-id-3">
+
+                                                        <div style="display:flex; justify-content:center;">
+                                                            <p style=" font-size:large;">Data Upload in progress. Please
+                                                                avoid
+                                                                refreshing or using the back button.</p>
+                                                        </div>
+                                                        <div class="slds-p-around_medium">
+                                                            <lightning-progress-bar value={progressVal} size="large"
+                                                                variant="circular"></lightning-progress-bar>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </section>
+                                        </template>
+
+                                        <template lwc:else>
+                                            <div class="custom-input-container">
+                                                <lightning-input style="display:flex; justify-content:center;"
+                                                    type="file" accept=".csv" onchange={handleFileUpload}
+                                                    class="file-selector-image">
+                                                </lightning-input>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <footer class="slds-modal__footer">
+                                        <button class="slds-button slds-button_neutral"
+                                            onclick={handleUploadDialog}>Cancel</button>
+                                    </footer>
+
+                                </div>
+                            </section>
+
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+                        </template>
+
+                        <template lwc:if={isPending}>
+                            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                                aria-describedby="modal-content-id-4"
+                                class="slds-modal slds-fade-in-open slds-modal_small ">
+                                <div class="slds-modal__container">
+                                    <header class="slds-modal__header">
+                                        <button
+                                            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                            title="Close" onclick={showPendingWindow}>
+                                            <lightning-icon icon-name="utility:close" alternative-text="close"
+                                                variant="inverse" size="small" onclick={showPendingWindow}>
+                                            </lightning-icon>
+                                            <span class="slds-assistive-text">Close</span>
+                                        </button>
+                                        <h2 id="modal-heading-04" class="slds-text-heading_medium slds-hyphenate">
+                                            Uploading
+                                            Pending Data</h2>
+                                    </header>
+
+                                    <div class="slds-modal__content slds-p-around_medium " id="modal-content-id-4">
+
+                                        <div style="display:flex; justify-content:center;">
+                                            <p class="slds-text-align_center" style="font-size:medium;">Your previous
+                                                upload is currently in progress, with <b>{isPendingSize}</b> pending
+                                                data. Once the pending data is complete, you can upload new data.
+                                                For further assistance, please contact your system administrator. </p>
+                                        </div>
+                                    </div>
+                                    <footer class="slds-modal__footer">
+                                        <button class="slds-button slds-button_neutral"
+                                            onclick={showPendingWindow}>Cancel</button>
+                                    </footer>
+                                </div>
+                            </section>
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+                        </template>
+
+                        <template lwc:if={showWarning}>
+                            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-05" aria-modal="true"
+                                aria-describedby="modal-content-id-5" class="slds-modal slds-fade-in-open ">
+                                <div class="slds-modal__container">
+                                    <header class="slds-modal__header">
+                                        <button
+                                            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                            title="Close" onclick={handleShowWarning}>
+                                            <lightning-icon icon-name="utility:close" alternative-text="close"
+                                                variant="inverse" size="small" onclick={handleShowWarning}>
+                                            </lightning-icon>
+                                            <span class="slds-assistive-text">Close</span>
+                                        </button>
+                                        <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">
+                                            Alert</h2>
+                                    </header>
+
+                                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-5">
+                                        <div style="display:flex; justify-content:center;">
+                                            <p class="slds-text-align_center" style="font-size:medium;">
+                                            All records updated successfully. Except Unavailable products will remain
+                                                unaltered and are excluded from updates.</p>
+                                        </div>
+                                    </div>
+
+                                    <footer class="slds-modal__footer">
+                                        <button class="slds-button slds-button_neutral"
+                                            onclick={handleShowWarning}>Ok</button>
+                                    </footer>
+
+                                </div>
+                            </section>
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+                        </template>
+
+                    </lightning-button-group>
+                </template>
+                <template lwc:else></template>
+
+            </div>
+        <!-- </template> -->
+    </div>
+
+    <!-- <template if:true={item.isBDMSelected}> -->
+    <!-- <lightning-button-group class="slds-align_absolute-center slds-p-top_x-small">
+            <lightning-button label="Download" icon-name="utility:download"
+                onclick={handleDownload}>
+            </lightning-button>
+
+            <template if:false={getFYDisabled}>
+                <lightning-button label="Upload" onclick={openUploadDialog}
+                    icon-name="utility:upload">
+                </lightning-button>
+
+                <template lwc:if={showUploadDialog}>
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01"
+                        aria-modal="true" aria-describedby="modal-content-id-1"
+                        class="slds-modal slds-fade-in-open ">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <button
+                                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    title="Close" onclick={openUploadDialog}>
+                                    <lightning-icon icon-name="utility:close"
+                                        alternative-text="close" variant="inverse"
+                                        size="small"></lightning-icon>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 id="modal-heading-01"
+                                    class="slds-text-heading_medium slds-hyphenate">Upload
+                                    CSV</h2>
+                            </header>
+
+                            <div class="slds-modal__content slds-p-around_medium spinnerclass"
+                                id="modal-content-id-1">
+                                <template lwc:if={isLoading}>
+                                    <div class="spinnerLoading">
+                                        <lightning-spinner alternative-text="Loading"
+                                            size="medium" variant="brand" class="spinnerClass">
+                                        </lightning-spinner>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="custom-input-container">
+
+                                    <lightning-input style="display:flex; justify-content:center; "  type="file" accept=".csv" onchange={handleUpload} class="file-selector-image"> 
+                                    </lightning-input >
+                                </div>
+
+                                </template>
+                            </div>
+
+                            <footer class="slds-modal__footer">
+                                <button class="slds-button slds-button_neutral"
+                                    onclick={openUploadDialog}>Cancel</button>
+                            </footer>
+
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+
+                </template>
+
+            </template>
+        </lightning-button-group> -->
+    <!-- </template> -->
+
+    <div>
+        <c-spm_dtc_product_table bus-unit-name={busUnitName} refresh-table={refreshTable} account-id={accountId}
+            financial-year={financialYear} selected-month={selectedMonth} currency-symbol={currencySymbol}
+            prod-code={ProdCode} prod-description={ProdDescription} hide-button={hideButton} onsave={handleDispatch}
+            account-name={accountName} commitment-available={isAvailableForCommitment}>
+        </c-spm_dtc_product_table>
+    </div>
+</template>

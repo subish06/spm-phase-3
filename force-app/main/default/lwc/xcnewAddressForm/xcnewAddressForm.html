@@ -1,0 +1,9 @@
+<template>
+    <div class="container">
+      <lightning-input label="Street" value={street} onchange={handleStreetChange}></lightning-input>
+      <lightning-input label="City" value={city} onchange={handleCityChange}></lightning-input>
+      <lightning-input label="State" value={state} onchange={handleStateChange}></lightning-input>
+      <lightning-input label="Postal Code" value={postalCode} onchange={handlePostalCodeChange}></lightning-input>
+      <lightning-button label="Save" onclick={saveAddress}></lightning-button>
+    </div>
+  </template>

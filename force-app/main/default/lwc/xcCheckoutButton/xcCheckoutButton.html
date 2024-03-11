@@ -1,0 +1,44 @@
+<template>
+    <template if:true={showBlockLabel}>
+        <div class="hasCreditHold">{labels.CartCreditHold}</div>
+    </template>
+    <template if:true={showCheckout}>
+        <div class="slds-box" if:true={canPreOrder}>            
+            <lightning-input data-id="checkbox" type="checkbox" label="Process Pre-Order" name="input1" onchange ={handlePreOrder}></lightning-input>           
+        </div>
+        <button class="slds-button slds-button_brand slds-button_stretch" title={labels.CartCheckoutButtonLabel} onclick={handleCheckOut}>{labels.CartCheckoutButtonLabel}</button>
+    </template>
+    <template if:false={showCheckout}>
+        <button class="slds-button slds-button_brand slds-button_stretch" title={labels.CartCheckoutButtonLabel} disabled>{labels.CartCheckoutButtonLabel}</button>
+    </template>
+
+    <template if:true={isModalOpen}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{warningHeader}</h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p>{warningMessage}</p>
+                    <p>{warningMessage2}</p>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                    <button if:true={showContinueCheckout} class="slds-button slds-button_brand" onclick={proceedToCheckout} title="Continue with Checkout">Continue with Checkout</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

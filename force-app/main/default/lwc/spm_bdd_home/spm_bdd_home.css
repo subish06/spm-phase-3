@@ -1,0 +1,76 @@
+.custom-box {
+    text-align: center;
+    background-color: #ECF5FC;
+    margin: 14px;
+    border: 1px solid #D2D2D2;
+    border-radius: 6px;
+}
+
+.avatar {
+    vertical-align: middle;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid #5f6264;
+}
+
+.regular-badge {
+    background-color: #d5d5e7;
+    display: inline-block;
+    padding: 6px 8px;
+    border-radius: 20px;
+    margin-right: 12px;
+}
+
+.even-badge {
+    background-color: #7ed1e6;
+    display: inline-block;
+    padding: 6px 8px;
+    border-radius: 20px;
+    margin-right: 12px;
+}
+
+.badge-content {
+    font-size: 0.8rem;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.pending-badge {
+    background-color: #f3947e;
+    display: inline-block;
+    padding: 6px 8px;
+    border-radius: 20px;
+    margin-right: 12px;
+}
+
+.badge-label {
+    font-weight: 600;
+}
+
+.badge-value {
+    font-weight: bolder;
+    padding-left: 4px;
+    font-size: 14px;
+}
+
+.spinnerclass {
+    position: static;
+    color: #D2D2D2;
+}
+
+.actual-badge {
+    background-color: #8cf793;
+    display: inline-block;
+    padding: 6px 8px;
+    border-radius: 20px;
+    margin-right: 12px;
+}
+
+.my-icon-up {
+    --sds-c-icon-color-foreground-default: green;
+}
+
+.my-icon-down {
+--sds-c-icon-color-foreground-default: red;
+}

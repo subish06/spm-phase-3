@@ -1,0 +1,17 @@
+<apex:component access="global" controller="XC_OpportunityApprovalRequestController">
+    <apex:attribute name="recordIdVal" description="" type="String" assignTo="{!recordId}"/>
+    <div>
+        Your Opportunity request has been denied. Click here for details: <a href="{!detailLink}">Detail Link</a>
+    </div>
+    <div>Account: {!opp.Account.Name}</div>
+    <div>Product(s):</div>
+    <ul style="margin-block-start: 0px; margin-block-end: 0px; margin-top: 0px; margin-bottom: 0px;">
+        <apex:repeat var="prod" value="{!oppProducts}">
+            <li style="margin-top: 0px; margin-bottom: 0px;">
+                {!prod.Product2.Name}
+            </li>
+        </apex:repeat>
+    </ul>
+
+    <p>Comments: {!approvalComments}</p>
+</apex:component>

@@ -1,0 +1,152 @@
+<template>
+
+    <div class="feedbackBlock" >
+        <div class="slds-tabs_card">
+            <template if:false={showMessage}>
+                <template if:false={messageExistingUser}>
+                    <lightning-card>
+
+                        <lightning-layout multiple-rows="true" class="feedbackLayout">
+                            <lightning-layout-item padding="around-small" size="2" flexibility="true">
+                                <img src={gibsonLogo} alt="Image"
+                                    style="width:100px;height:60px;"></img>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" style="padding-top: 25px;padding-left: 75px;" size="10"
+                                flexibility="true">
+                                <p class="slds-text-heading_medium slds-p-horizontal_x-large slds-float_left customFont" >
+                                    <b>Gibson Brands Consumer Satisfaction Survey</b>
+                                </p>
+                            </lightning-layout-item>
+                        </lightning-layout>
+
+                        <lightning-layout multiple-rows="true" class="slds-p-horizontal_x-large"
+                            style="padding-top:8px;">
+                            <lightning-layout-item size="12" padding="around-small" flexibility="true"
+                                style="padding-top:30px;">
+                                <div class="slds-text-heading_small">Question 1: On a scale of 1-10 (with 1 being very dissatisfied and 10 being very satisfied), 
+                                    how satisfied are you with your service experience?
+                                </div>
+
+                                <div class="slidderHeader">
+                                    <template for:each={serviceQnrs} for:item="serviceQnr">
+                                        <template lwc:if={serviceQnr.isSelected}>
+                                            <div key={serviceQnr.value} class="slidderBox selected"
+                                                data-value={serviceQnr.value} onclick={satisfiedHandleClick}>
+                                                {serviceQnr.value}</div>
+                                        </template>
+
+                                        <template lwc:else>
+                                            <div key={serviceQnr.value} class="slidderBox slidderBoxLeft"
+                                                data-value={serviceQnr.value} onclick={satisfiedHandleClick}>
+                                                {serviceQnr.value}</div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="12" padding="around-small" flexibility="true"
+                                style="padding-top:30px;">
+                                <div class="slds-text-heading_small">Question 2: On a scale of 1-10 (1-very unlikely and 10 being very likely), how likely are you to recommend Gibson to your family and friends based on your recent experience?
+                                </div>
+
+                                <div class="slidderHeader">
+                                    <template for:each={recommendQnrs} for:item="recommendQnr">
+                                        <template lwc:if={recommendQnr.isSelected}>
+                                            <div key={recommendQnr.value} class="slidderBox selected"
+                                                data-value={recommendQnr.value} onclick={recommendHandleClick}>{recommendQnr.value}
+                                            </div>
+                                        </template>
+
+                                        <template lwc:else>
+                                            <div key={recommendQnr.value} class="slidderBox slidderBoxLeft"
+                                                data-value={recommendQnr.value} onclick={recommendHandleClick}>{recommendQnr.value}
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="12" padding="around-small" flexibility="true"
+                                style="padding-top:30px;">
+                                <div class="slds-text-heading_small">Question 3: On a scale of 1-10 (with 1 being strongly disagree and 10 being strongly agree), 
+                                    did we effectively resolved your issue?
+                                </div>
+
+                                <div class="slidderHeader">
+                                    <template for:each={issueQnrs} for:item="issueQnr">
+                                        <template lwc:if={issueQnr.isSelected}>
+                                            <div key={issueQnr.value} class="slidderBox selected"
+                                                data-value={issueQnr.value} onclick={issueHandleClick}>{issueQnr.value}
+                                            </div>
+                                        </template>
+
+                                        <template lwc:else>
+                                            <div key={issueQnr.value} class="slidderBox slidderBoxLeft"
+                                                data-value={issueQnr.value} onclick={issueHandleClick}>{issueQnr.value}
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="9" padding="around-small" flexibility="true"
+                                style="padding-top:30px;">
+                                <div class="slds-text-heading_small">Question 4: How can we improve your service experience in the
+                                    future?
+                                </div>
+                                <lightning-textarea style="padding-top:8px;" variant="label-hidden"
+                                    label="Textarea field with a placeholder"
+                                    placeholder="Start sharing your feedback/suggestions here..." value={improve}
+                                    onchange={improveHandleChange}>
+                                </lightning-textarea>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size="12" padding="around-small" flexibility="true">
+                                <lightning-button variant="brand" label="Submit" title="Submit" onclick={handleClick}
+                                    class="slds-m-left_x-small slds-align_absolute-center"></lightning-button>
+                            </lightning-layout-item>
+
+                        </lightning-layout>
+                    </lightning-card>
+                </template>
+            </template>
+
+            <lightning-spinner if:true={showSpinner} variant="brand" size="medium">
+            </lightning-spinner>
+
+            <template if:true={showMessage}>
+                <lightning-card>
+                    <lightning-layout multiple-rows="true" style="padding:25px">
+                        <lightning-layout-item padding="around-small" size="2" flexibility="true">
+                            <img src={gibsonLogo} alt="Image"
+                                style="width:100px;height:60px;"></img>
+                        </lightning-layout-item>
+                        <lightning-layout-item style="padding-top: 25px;"
+                            padding="around-small" size="10" flexibility="true">
+                            <p class="slds-text-heading_medium"><b>Thank you for providing feedback to help us improve
+                                    our service.</b></p>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-card>
+            </template>
+
+            <template if:true={messageExistingUser}>
+                <lightning-card>
+                    <lightning-layout multiple-rows="true" style="padding:25px">
+                        <lightning-layout-item padding="around-small" size="2" flexibility="true">
+                            <img src={gibsonLogo} alt="Image"
+                                style="width:100px;height:60px;"></img>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="10" flexibility="true" style="
+                        padding-top: 25px;padding-right: 50px;">
+                            <p class="slds-text-heading_medium slds-align_absolute-center"><b>The feedback was already
+                                    submitted for this case.</b></p>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-card>
+            </template>
+
+        </div>
+    </div>
+
+</template>

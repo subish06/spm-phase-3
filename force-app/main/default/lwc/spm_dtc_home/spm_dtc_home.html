@@ -1,0 +1,200 @@
+<template>
+    <lightning-card>
+        <h1 slot="title">Hi, {firstName} {lastName}</h1>
+        <lightning-button-group slot="actions">
+            <lightning-button label="Set Sales Target" title="Set Sales Target" onclick={toggleModal}>
+            </lightning-button>
+        </lightning-button-group>
+
+        <div class="custom-box slds">
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="medium" variant="brand" class="spinnerClass">
+                </lightning-spinner>
+            </template>
+
+            <lightning-layout multiple-rows style="padding-top: 16px;padding-bottom: 16px">
+                <lightning-layout-item size="2" style="text-align: right;padding-top: 8px;">Financial Year
+                    :</lightning-layout-item>
+                <lightning-layout-item style="width: 150px;padding-left: 8px;padding-right: 8px;" size="2">
+                    <lightning-combobox name="yearSelection" value={selYear} options={financialYearPickList}
+                        placeholder="Financial Year" onchange={handleFYChange} variant="label-hidden">
+                    </lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item size="8">
+                    <span style="display: flex;justify-content: left;padding-top: 4px; padding-left: 24px;">
+                        <div class="regular-badge">
+                            <span class="badge-content"><span class="badge-label">{stats.prevYear} Actuals :</span>
+                                <span class="badge-value">{stats.prevYearActual}</span></span>
+                        </div>
+                        <div class="even-badge">
+                            <span class="badge-content"><span class="badge-label">{selYear} Target :</span>
+                                <span class="badge-value">{stats.curYearTarget}</span></span>
+                        </div>
+                        <div class="actual-badge">
+                            <span class="badge-content"><span class="badge-label">{selYear} Actuals :</span>
+                                <span class="badge-value">{stats.curYearActual}</span></span>
+                        </div>
+                        <div class="pending-badge">
+                            <span class="badge-content"><span class="badge-label">{selYear} Variance :</span>
+                                <span class="badge-value">{stats.curYearVariance}</span>
+
+                                <template lwc:if={stats.showVarianceArrow}>
+                                    <template lwc:if={stats.varianceArrow}>
+                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup" size="xx-small">
+                                        </lightning-icon>
+                                    </template>
+                                    <template lwc:else>
+                                        <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
+                                            size="xx-small"></lightning-icon>
+                                    </template>
+                                </template>
+                            </span>
+
+                        </div>
+                    </span>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <div style="padding: 1rem;">
+            <c-spm_dtc_card current-user={userId} selected-financial-year={selYear} refresh-table={timeoutId}
+                currency-symbol={currencySymbol} is-edit-disable={isEditDisable} onchildevent={handleChildEvent}></c-spm_dtc_card>
+        </div>
+    </lightning-card>
+    <template if:false={isPopupOpen}>
+        <template lwc:if={isOpenModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal  slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={toggleModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium slds-hyphenate">Set Sales Target</h2>
+                    </header>
+
+                    <div class="slds-modal__content" id="modal-content-id-1">
+                        <template lwc:if={isLoading} style="color: beige; background-color:aqua;">
+                            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"
+                                class="spinnerclass"></lightning-spinner>
+                        </template>
+                        <template lwc:else>
+                            <div class="slds-align_absolute-center slds-p-top_large" style="font-size: initial;">
+                                <lightning-layout-item class="slds-float_right" size="4">
+                                    <div class="regular-badge">
+                                        <span class="badge-content"><span class="badge-label">Financial Year :</span>
+                                            <span class="badge-value">{selYear}</span></span>
+                                    </div>
+                                </lightning-layout-item>
+
+                                <lightning-layout-item size="4" class="slds-p-around_medium slds-float_left">
+                                    <lightning-input type="number" onchange={handleTargetChange} label="Target"
+                                        value={BDDTarget} placeholder="Enter current FY Target..."
+                                        disabled={getFYDisabled}>
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </div>
+                        </template>
+
+                        <div class="slds-p-around_medium">
+                            <table class=" slds-table_bordered slds-table_cell-buffer"
+                                style="border: 1px solid #cecece;">
+                                <thead>
+                                    <tr style="background: aliceblue;height: 40px; ">
+                                        <th style="text-align: center;border-right: 1px solid #cecece;width: 19rem;">Sub Channel
+                                        </th>
+                                        <th style="text-align: center;border-right: 1px solid #cecece;">Percentage
+                                            Distribution (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={BDMList} for:item="user">
+                                        <tr key={user.userId}>
+                                            <td style="border-right: 1px solid #cecece;display: flex;
+                                                    align-items: center;
+                                                    flex-direction: column;padding: 20px;">
+                                                <!-- <div
+                                                    class="slds-avatar slds-avatar_circle avatar slds-align_absolute-center">
+                                                    <img src={user.url} alt={user.name} />
+                                                </div> -->
+                                                <div style="padding-top: 4px;font-weight: 500;">{user.name}</div>
+                                            </td>
+                                            <td style="padding-bottom: 15px;border-right: 1px solid #cecece">
+                                                <lightning-input value={user.disPercent}
+                                                    onchange={handlePercentageChange} data-key={user.userId}
+                                                    disabled={getFYDisabled}
+                                                    style="display: flex;justify-content: center;"></lightning-input>
+                                            </td>
+                                        </tr>
+                                    </template>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <template lwc:if={isTargetChanged}>
+                            <lightning-button variant="brand" label="Save" title="Save" disabled={getFYDisabled}
+                                onclick={showpopup} class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button label="Cancel" title="" onclick={toggleModal} class="slds-m-left_x-small">
+                            </lightning-button>
+                        </template>
+                        <template lwc:else>
+                            <lightning-button variant="brand" label="Save" title="Save" onclick={showpopup} disabled
+                                class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button label="Cancel" title="" onclick={toggleModal} class="slds-m-left_x-small">
+                            </lightning-button>
+                        </template>
+
+                    </footer>
+
+                </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </template>
+    <template lwc:if={isPopupOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closePopup}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">Set sales Target </h2>
+                </header>
+
+                <div class="slds-modal__content" id="modal-content-id-2">
+                    <p class="slds-align_absolute-center slds-p-around_small" style="font-size: initial;">
+                        Are you sure you want to save sales target?</p>
+                    <!-- <lightning-input type="checkbox" style="margin-left: 130px;padding-bottom: 16px"
+                        label="Do you want to acknowledge changes for the modified BDMs?" onchange={handleAcknowledge}
+                        name="Do you want to acknowledge changes for the modified BDMs?">
+                    </lightning-input> -->
+                </div>
+                <footer class="slds-modal__footer">
+                    <template lwc:if={isLoading}>
+                        <lightning-button variant="brand" label="Saving..." title="Saving..." disabled="true"
+                            class="slds-m-left_x-small"></lightning-button>
+                    </template>
+                    <template lwc:else>
+                        <lightning-button variant="brand" label="Continue" title="Continue" disabled={getFYDisabled}
+                            onclick={saveTarget} class="slds-m-left_x-small"></lightning-button>
+                    </template>
+
+                    <lightning-button label="Cancel" title="" onclick={closePopup} class="slds-m-left_x-small">
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+</template>

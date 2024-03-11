@@ -1,0 +1,10 @@
+.upload{
+    --slds-c-button-spacing-inline-start: var(--slds-c-button-brand-spacing-inline-start, var(--sds-c-button-brand-spacing-inline-start, var(--lwc-spacingMedium,1rem)));
+    --slds-c-button-spacing-inline-end: var(--slds-c-button-brand-spacing-inline-end, var(--sds-c-button-brand-spacing-inline-end, var(--lwc-spacingMedium,1rem)));
+    text-align: center;
+    justify-content: center;
+    transition: border .15s linear;
+    --slds-c-button-color-background: var(--slds-c-button-brand-color-background, var(--sds-c-button-brand-color-background, var(--lwc-brandAccessible,rgb(132, 115, 77))));
+    --slds-c-button-color-border: var(--slds-c-button-brand-color-border, var(--sds-c-button-brand-color-border, var(--lwc-brandAccessible,rgb(132, 115, 77))));
+    --slds-c-button-text-color: #FFFFFF;
+}

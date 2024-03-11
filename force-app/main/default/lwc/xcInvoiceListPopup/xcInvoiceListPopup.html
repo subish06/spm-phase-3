@@ -1,0 +1,26 @@
+<template>
+    <!-- Modal/Popup Box LWC body starts here -->
+    <lightning-spinner
+        if:true={showSpinner}
+        alternative-text="Please Wait"
+        size="medium"
+        variant="brand">
+    </lightning-spinner>
+    <div class="slds-p-around_medium" style="width:57%;margin:0 auto;" if:false={showSpinner}>
+        <div if:true={showNull}>No invoices to show</div>
+        <div if:false={showNull}>
+            <!--datatable here-->
+            <div class="slds-p-bottom_medium" >
+                <div>
+                    <lightning-datatable data={visibleInvoices} columns={columns} key-field="Id"
+                        hide-checkbox-column="true">
+                    </lightning-datatable>
+                </div>
+                <div slot="footer" class="slds-var-m-vertical_medium" style="width: 38vw;">
+                    <c-Xc-Pagination-Utils records={invoiceData} record-size="5" onupdate={updateInvoiceHandler}>
+                    </c-Xc-Pagination-Utils>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

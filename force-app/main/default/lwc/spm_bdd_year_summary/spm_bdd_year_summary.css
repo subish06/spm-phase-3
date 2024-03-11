@@ -1,0 +1,7 @@
+.my-icon-up {
+--sds-c-icon-color-foreground-default: green;
+}
+
+.my-icon-down {
+--sds-c-icon-color-foreground-default: red;
+}

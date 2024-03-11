@@ -1,0 +1,21 @@
+.THIS{
+    background-color: white;
+}
+
+
+.alignCenter{    
+    text-align: center;
+}
+
+.resultDiv{
+    background-color: white;
+}
+
+.headerLabelDiv{
+    padding-left:10px;
+    padding-bottom:10px;
+}
+
+.gridClass{
+    padding-bottom:20px;
+}

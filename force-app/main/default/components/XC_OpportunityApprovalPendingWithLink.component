@@ -1,0 +1,15 @@
+<apex:component access="global" controller="XC_OpportunityApprovalRequestController">
+    <apex:attribute name="recordIdVal" description="" type="String" assignTo="{!recordId}"/>
+    <div>
+        An opportunity request has been submitted by {!opp.Owner.Name} for your approval. Click here to respond: <a href="{!approvalURL}">Detail Link</a>
+    </div>
+    <div>Account: {!opp.Account.Name}</div>
+    <div>Product(s):</div>
+    <ul style="margin-block-start: 0px; margin-block-end: 0px; margin-top: 0px; margin-bottom: 0px;">
+        <apex:repeat var="prod" value="{!oppProducts}">
+            <li style="margin-top: 0px; margin-bottom: 0px;">
+                {!prod.Product2.Name}
+            </li>
+        </apex:repeat>
+    </ul>
+</apex:component>

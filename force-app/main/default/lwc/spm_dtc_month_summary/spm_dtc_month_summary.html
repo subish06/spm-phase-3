@@ -1,0 +1,870 @@
+<template>
+    <lightning-card>
+        <template lwc:if={isEditDisable}></template>
+        <template lwc:else>
+        <lightning-layout>
+            <template lwc:if={hideEditButton}>
+                <lightning-layout-item size="12">
+                    <template if:false={isEditMode}>
+                        <lightning-input style="float: right;" class="toggleclass" type="toggle" label="Summary View"
+                            onchange={handleToggleChange} message-toggle-active='' message-toggle-inactive=''>
+                        </lightning-input>
+                    </template>
+                </lightning-layout-item>
+            </template>
+            <template lwc:else>
+                <lightning-layout-item padding="around-small" size="5">
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="2">
+
+                    <template if:true={getFYDisabled}>
+                        <lightning-button label="Edit" variant="brand" onclick={toggleEdit}></lightning-button>
+                    </template>
+
+                    <template if:true={isEditMode}>
+                        <div class="slds-align_absolute-center" style="padding-top: 10px;
+        column-gap: 10px;">
+                                <lightning-button label="Save" variant="brand" onclick={showpopup}></lightning-button> 
+
+                            <lightning-button label="Cancel" onclick={toggleEdit}></lightning-button>
+                        </div>
+                    </template>`
+
+                    <template lwc:if={isPopupOpen}>
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                            aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                        title="Close" onclick={closePopup}>
+                                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                            size="small"></lightning-icon>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button>
+                                    <h2 class="slds-text-heading_medium slds-hyphenate">Sales target</h2>
+                                </header>
+                
+                                <div class="slds-modal__content" id="modal-content-id-2">
+                                    <p class="slds-align_absolute-center slds-p-around_small"  style="font-size: initial;">Are you sure you want to save sales target?</p>
+                                </div>
+                                <footer class="slds-modal__footer">
+                                        <lightning-button variant="brand" label="Save" title="Save" onclick={handleSave}
+                                            class="slds-m-left_x-small"></lightning-button>
+                
+                                    <lightning-button label="Cancel" title="" onclick={closePopup}
+                                        class="slds-m-left_x-small"></lightning-button>
+                                </footer>
+                            </div>
+                        </section>
+                
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>
+
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="1">
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="4">
+                    <template if:false={isEditMode}>
+                        <lightning-input class="toggleclass" type="toggle" label="Summary View"
+                            onchange={handleToggleChange} message-toggle-active='' message-toggle-inactive=''>
+                        </lightning-input>
+                    </template>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+        </template>
+
+        <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+
+            <template if:false={isSummaryMode}>
+                <lightning-accordion-section name="Target" label="Target">
+                    <div style="padding-top: 8px">
+                        <template lwc:if={isEditMode}>
+                            <div style="width: 100%; overflow-x: auto;">
+                                <table
+                                    class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+                                    style="font-size: 14px; width: 2000px;">
+                                    <thead>
+                                        <tr>
+                                            <template for:each={columns} for:item="column">
+                                                <template lwc:if={column.displayColumn}>
+                                                    <th key={column.fieldName} scope="col" style="width: 200px;">
+                                                        <a class="slds-th__action slds-text-link_reset">
+                                                            <div>
+                                                                <span class="slds-truncate" style="width: 100px;"
+                                                                    title="Business Unit / Month">{column.label}</span>
+                                                            </div>
+                                                        </a>
+                                                        <div>
+                                                            <span>
+                                                                <span></span>
+                                                            </span>
+                                                        </div>
+                                                    </th>
+                                                </template>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template if:true={loading}>
+                                            <div class="slds-spinner_container">
+                                                <div role="status"
+                                                    class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                                    <span class="slds-assistive-text">Loading...</span>
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template if:false={loading}>
+                                            <template for:each={salesTargetData} for:item="item">
+                                                <template lwc:if={item.displayRow}>
+
+                                                    <tr key={item.id} class="slds-hint-parent" style="height: 35px;">
+                                                        <th class="slds-cell_action-mode" scope="row">
+                                                            <div class="slds-truncate">
+                                                                {item.busUnit}
+                                                            </div>
+                                                        </th>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Apr.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Apr.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Apr"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Apr.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Apr"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.May.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.May.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="May"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.May.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="May"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Jun.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Jun.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Jun"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Jun.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Jun"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Jul.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Jul.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Jul"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Jul.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Jul"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Aug.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Aug.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Aug"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Aug.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Aug"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Sep.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Sep.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Sep"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Sep.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Sep"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Oct.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Oct.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Oct"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Oct.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Oct"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Nov.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Nov.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Nov"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Nov.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Nov"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Dec.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Dec.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Dec"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Dec.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Dec"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Jan.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Jan.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Jan"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Jan.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Jan"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Feb.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Feb.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Feb"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Feb.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Feb"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+
+                                                            </div>
+                                                        </td>
+                                                        <td class="slds-cell_action-mode" role="gridcell">
+                                                            <div class="slds-truncate" style="text-align: right;">
+                                                                <template lwc:if={item.months.Mar.isDisable}>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Mar.value} disabled
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Mar"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <input class="slds-input" type="number"
+                                                                        value={item.months.Mar.value}
+                                                                        data-record-id={item.recordId}
+                                                                        data-key={item.key} data-field-name="Mar"
+                                                                        onchange={handleInputChange} />
+                                                                </template>
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </template>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+
+                        <template lwc:else>
+                            <table
+                                class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols"
+                                style="font-size: 14px;">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <template for:each={columns} for:item="column">
+                                            <template lwc:if={column.displayColumn}>
+                                                <th key={column.fieldName}
+                                                    class="slds-is-resizable slds-is-sortable slds-cell_action-mode"
+                                                    style="height: 35px;">
+                                                    <a class="slds-th__action slds-text-link_reset">
+                                                        <div
+                                                            class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                            <span class="slds-truncate"
+                                                                title="Business Unit / Month">{column.label}</span>
+                                                        </div>
+                                                    </a>
+                                                    <div class="slds-resizable">
+                                                        <span class="slds-resizable__handle">
+                                                            <span class="slds-resizable__divider"></span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </template>
+                                        </template>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={salesTargetData} for:item="data">
+                                        <tr key={data.id} class="slds-hint-parent" style="height: 35px;">
+                                            <th class="slds-cell_action-mode" scope="row">
+                                                <div class="slds-truncate">
+                                                    {data.busUnit}
+                                                </div>
+                                            </th>
+
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.AprData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.MayData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.JunData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.JulData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.AugData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.SepData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.OctData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.NovData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.DecData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.JanData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.FebData}
+                                                </div>
+                                            </td>
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate" style="text-align: right;">
+                                                    {data.MarData}
+                                                </div>
+                                            </td>
+
+                                            <td class="slds-cell_action-mode" role="gridcell">
+                                                <div class="slds-truncate"
+                                                    style="text-align: right;font-weight: bolder;">
+                                                    {data.totalData}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </template>
+                    </div>
+                </lightning-accordion-section>
+
+              <lightning-accordion-section name="Actuals" label="Actuals">
+                    <div style="padding-top: 8px">
+                        <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols"
+                            style="font-size: 14px;">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <template for:each={columns} for:item="column">
+                                        <th key={column.fieldName}
+                                            class="slds-is-resizable slds-is-sortable slds-cell_action-mode"
+                                            style="height: 35px;">
+                                            <a class="slds-th__action slds-text-link_reset">
+                                                <div
+                                                    class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                    <span class="slds-truncate"
+                                                        title="Business Unit / Month">{column.label}</span>
+                                                </div>
+                                            </a>
+                                            <div class="slds-resizable">
+                                                <span class="slds-resizable__handle">
+                                                    <span class="slds-resizable__divider"></span>
+                                                </span>
+                                            </div>
+                                        </th>
+                                    </template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={actualTargetData} for:item="data">
+                                    <tr key={data.id} class="slds-hint-parent" style="height: 35px;">
+                                        <th class="slds-cell_action-mode" scope="row">
+                                            <div class="slds-truncate">
+                                                {data.busUnit}
+                                            </div>
+                                        </th>
+
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.AprData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.MayData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.JunData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.JulData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.AugData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.SepData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.OctData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.NovData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.DecData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.JanData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.FebData}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.MarData}
+                                            </div>
+                                        </td>
+
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;font-weight: bolder;">
+                                                {data.totalData}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="Variance" label="Variance">
+                    <div style="padding-top: 8px">
+                        <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols"
+                            style="font-size: 14px;">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <template for:each={columns} for:item="column">
+                                        <th key={column.fieldName}
+                                            class="slds-is-resizable slds-is-sortable slds-cell_action-mode"
+                                            style="height: 35px;">
+                                            <a class="slds-th__action slds-text-link_reset">
+                                                <div
+                                                    class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                    <span class="slds-truncate"
+                                                        title="Business Unit / Month">{column.label}</span>
+                                                </div>
+                                            </a>
+                                            <div class="slds-resizable">
+                                                <span class="slds-resizable__handle">
+                                                    <span class="slds-resizable__divider"></span>
+                                                </span>
+                                            </div>
+                                        </th>
+                                    </template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={varianceData} for:item="data">
+                                    <tr key={data.id} class="slds-hint-parent" style="height: 35px;">
+                                        <th class="slds-cell_action-mode" scope="row">
+                                            <div class="slds-truncate">
+                                                {data.busUnit}
+                                            </div>
+                                        </th>
+
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.AprData}
+                                                <template if:true={data.AprShowVarianceArrow}>
+                                                    <template lwc:if={data.AprTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.MayData}
+                                                <template if:true={data.MayShowVarianceArrow}>
+                                                    <template lwc:if={data.MayTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.JunData}
+                                                <template if:true={data.JunShowVarianceArrow}>
+                                                    <template lwc:if={data.JunTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.JulData}
+                                                <template if:true={data.JulShowVarianceArrow}>
+                                                    <template lwc:if={data.JulTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.AugData}
+                                                <template if:true={data.AugShowVarianceArrow}>
+                                                    <template lwc:if={data.AugTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.SepData}
+                                                <template if:true={data.SepShowVarianceArrow}>
+                                                    <template lwc:if={data.SepTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.OctData}
+                                                <template if:true={data.OctShowVarianceArrow}>
+                                                    <template lwc:if={data.OctTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.NovData}
+                                                <template if:true={data.NovShowVarianceArrow}>
+                                                    <template lwc:if={data.NovTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.DecData}
+                                                <template if:true={data.DecShowVarianceArrow}>
+                                                    <template lwc:if={data.DecTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.JanData}
+                                                <template if:true={data.JanShowVarianceArrow}>
+                                                    <template lwc:if={data.JanTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.FebData}
+                                                <template if:true={data.FebShowVarianceArrow}>
+                                                    <template lwc:if={data.FebTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;">
+                                                {data.MarData}
+                                                <template if:true={data.MarShowVarianceArrow}>
+                                                    <template lwc:if={data.MarTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+
+                                        <td class="slds-cell_action-mode" role="gridcell">
+                                            <div class="slds-truncate" style="text-align: right;font-weight: bolder;">
+                                                {data.totalData}
+                                                <template if:true={data.totalShowVarianceArrow}>
+                                                    <template lwc:if={data.totalTargetAchieved}>
+                                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                            size="xx-small"></lightning-icon>
+                                                    </template>
+
+                                                    <template lwc:else>
+                                                        <lightning-icon class="my-icon-down"
+                                                            icon-name="utility:arrowdown" size="xx-small">
+                                                        </lightning-icon>
+
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </lightning-accordion-section>  
+            </template>
+
+            <template if:true={isSummaryMode}>
+                <div style="overflow: scroll;">
+                    <lightning-tree-grid class={varianceDifference} columns={gridColumns} data={summaryScreenData}
+                        expanded-rows={gridExpandedRows} onrowaction={handleRowAction} key-field="id"
+                        hide-checkbox-column></lightning-tree-grid>
+                </div>
+            </template>
+
+        </lightning-accordion>
+    </lightning-card> 
+
+
+</template>

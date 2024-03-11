@@ -1,0 +1,176 @@
+<template>
+
+    <!-- <template if:true={userFirstName}> -->
+    <div class="">
+        <div class="slds-dropdown-trigger ">
+            <div style="padding-right: 160px;">
+                <div style="float: left;">
+                    <p>{userName}</p>
+                </div>
+
+                <div style="float: left;">
+                    <lightning-icon class="slds-m-right--small" icon-name='utility:user' alternative-text='user'
+                        size='small'>
+                    </lightning-icon>
+                </div>
+                <div class="slds-is-relative" style="float:right;">
+                    <lightning-icon icon-name='utility:cart' class="cartIcon" onclick={openCart} alternative-text='cart'
+                        size='small' title={cartTitle}>
+                    </lightning-icon>
+                    <!-- <template if:true={cartItemCount}> -->
+                    <a href={cartUrl} onclick={openCart}>
+                        <span class="slds-badge slds-theme_error cartBadge cartIcon">100</span>
+                        {count}
+                    </a>
+                    <!-- </template> -->
+                </div>
+
+            </div>
+            <div
+                class="slds-dropdown slds-dropdown--left slds-dropdown--actions slds-dropdown--menu slds-nubbin--top-right">
+                <ul class="slds-dropdown__list" role="menu">
+                    <li id="menu1" href="#" class="slds-dropdown__item">
+                        <a onclick={redirectToProfileUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Profile
+                            </p>
+                        </a>
+                    </li>
+
+                     <li id="" href="#" class="slds-dropdown__item">
+                        <a href={myProductsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Settings
+                            </p>
+                        </a>
+                    </li>
+
+                     <li  href="#" class="slds-dropdown__item">
+                        <a href={myProductsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Account Information
+                            </p>
+                        </a>
+                    </li>
+
+
+                     <li href="#" class="slds-dropdown__item">
+                        <a href={myProductsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Account Management
+                            </p>
+                        </a>
+                    </li>
+
+
+
+                    <li  href="#" class="slds-dropdown__item">
+                        <a href={myProductsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Orders
+                            </p>
+                        </a>
+                    </li>
+
+                     <li href="#" class="slds-dropdown__item">
+                        <a href={myProductsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Invoices
+                            </p>
+                        </a>
+                    </li>
+
+                     <li  href="#" class="slds-dropdown__item">
+                        <a href={myProductsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Lists
+                            </p>
+                        </a>
+                    </li>
+
+                     <li  href="#" class="slds-dropdown__item">
+                        <a href={myProductsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Messages
+                            </p>
+                        </a>
+                    </li>
+
+
+                     <li  href="#" class="slds-dropdown__item">
+                        <a href={myProductsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark  slds-m-right--x-small"></i>Contact Support
+                            </p>
+                        </a>
+                    </li>
+
+
+                    <!-- <li href="#" class="slds-dropdown__item">
+                        <a href={myDealersUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark-circled slds-m-right--x-small"></i>
+                                My
+                                Dealers
+                            </p>
+                        </a>
+                    </li>
+                    <li href="#" class="slds-dropdown__item">
+                        <a href={myPaymentsUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark-circled slds-m-right--x-small"></i>
+                                My
+                                Payments
+                            </p>
+                        </a>
+                    </li> -->
+                    <!-- <li href="#" class="slds-dropdown__item">
+                        <a href={myWishlistUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark-circled slds-m-right--x-small"></i>
+                                My
+                                Wishlist
+                            </p>
+                        </a>
+                    </li>
+                    <li href="#" class="slds-dropdown__item">
+                        <a href={myAddressbookUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark-circled slds-m-right--x-small"></i>
+                                My
+                                Address Book
+                            </p>
+                        </a>
+                    </li>
+                    <li href="#" class="slds-dropdown__item">
+                        <a href={mypreferencesUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark-circled slds-m-right--x-small"></i>
+                                Preferences
+                            </p>
+                        </a>
+                    </li>
+                    <li href="#" class="slds-dropdown__item">
+                        <a href={orderhistoryUrl} role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark-circled slds-m-right--x-small"></i>Order
+                                History
+                            </p>
+                        </a>
+                    </li> -->
+                    <li href="#" class="slds-dropdown__item">
+                        <a onclick={onLogout} href={logoutLink} c role="menuitemradio">
+                            <p class="slds-truncate">
+                                <i class="ion  ion-checkmark-circled slds-m-right--x-small"></i>Log Out
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</template>

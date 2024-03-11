@@ -1,0 +1,6 @@
+.infoRow
+{
+    display: flex;
+    justify-content: space-between;
+    color: rgb(94, 94, 94);
+}

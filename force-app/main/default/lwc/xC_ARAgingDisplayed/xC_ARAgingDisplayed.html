@@ -1,0 +1,54 @@
+<template>
+    
+    <!-- <lightning-accordion
+            active-section-name=''
+            allow-multiple-sections-open> -->
+            <!-- <lightning-accordion-section name="ARDisplay" label="AR Aging Invoices"> -->
+                <table if:true={showInvoicePopup} class="slds-m-top_small headerMinorDetails">
+                    
+                    <!--tr><th>Days Overdue</th></tr>-->
+                    <tr>
+                        <th></th>
+                        <th class="tableHeader clickable" onclick={handlePopup} style="background-color:wheat;color:black;" data-header-label='under30' scope="col">Upto 30</th>
+                        <th class="tableHeader clickable" onclick={handlePopup} style="background-color:yellow;color:black;" data-header-label='under60' scope="col">31 To 60</th>
+                        <th class="tableHeader clickable" onclick={handlePopup} style="background-color:orange;color:white;" data-header-label='under90' scope="col">61 To 90</th>
+                        <th class="tableHeader clickable" onclick={handlePopup} style="background-color:red;color:white;" data-header-label='over90' scope="col">Over 90</th>
+                        <th class="tableHeader" scope="col">Total</th>
+                        
+                    </tr>
+                    <tr>
+                        <th scope="row">Current</th>
+                        <td class="defaultData">
+                            <lightning-formatted-number value = {ageMap.under30}
+                            format-style="currency" currency-code="USD"></lightning-formatted-number>
+                        </td>
+                        <td class="defaultData">
+                            <lightning-formatted-number value = {ageMap.under60} format-style="currency" currency-code="USD"></lightning-formatted-number>
+                        </td>
+                        <td class="defaultData">
+                            <lightning-formatted-number value = {ageMap.under90}
+                            format-style="currency" currency-code="USD"></lightning-formatted-number>
+                        </td>
+                        <td class="defaultData">
+                            <lightning-formatted-number value = {ageMap.over90}
+                            format-style="currency" currency-code="USD"></lightning-formatted-number>
+                        </td>
+                        <td class="defaultData">
+                            <lightning-formatted-number value = {ageMap.total}
+                            format-style="currency" currency-code="USD"></lightning-formatted-number>
+                        </td>
+                        
+                    </tr>
+                    
+                </table>
+            
+              <div>
+                
+            </div>
+              <div>
+                <c-xc-invoice-list start-date={startDate} enddate={endDate}></c-xc-invoice-list>
+              </div>
+            
+    <!-- </lightning-accordion-section> -->
+<!-- </lightning-accordion> -->
+</template>

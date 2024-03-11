@@ -1,0 +1,18 @@
+<template>
+    <template lwc:if={renderHome}>
+        <c-spm_bdd_home lwc:if={showBDD}></c-spm_bdd_home>
+        <c-spm_admin_home lwc:elseif={showAdmin}></c-spm_admin_home>
+        <c-spm_dtc_home lwc:elseif={showDTC}></c-spm_dtc_home>
+        <c-spm_dtc_bdm_home lwc:elseif={showDTCBDM}></c-spm_dtc_bdm_home >
+        <c-spm_bdm_home lwc:else></c-spm_bdm_home>
+    </template>
+
+    <template lwc:else>
+        <lightning-card>
+            <p style="display: flex;justify-content: center;" class="slds-p-around_small">
+                <b>Unfortunately, you are not a configured user. Please contact your administrator to request
+                    access.</b>
+            </p>
+        </lightning-card>
+    </template>
+</template>

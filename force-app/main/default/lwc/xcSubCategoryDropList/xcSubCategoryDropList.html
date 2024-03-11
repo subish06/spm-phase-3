@@ -1,0 +1,49 @@
+<template>
+
+
+
+
+<template for:each={parentCat} for:item="item">
+    <a onmouseout={handleSubMenuMouseOut} onmouseover={handleMouseHover} data-id={item.Id} key={item.Id}
+        role="menuitem" href="#" aria-haspopup="true" aria-expanded="true" tabindex="-1">
+        {item.Name}
+    </a>
+</template>
+
+<div onmouseout={handleSubMenuMouseOut} onmouseover={handleSubMenuMouseHover} style={showHideSubCatPopup} class="subMenu slds-dropdown slds-dropdown_submenu slds-dropdown_submenu-right slds-dropdown_length-with-icon-5">
+
+    <template if:false={showNoSubCategory} for:each={subCategories} for:item="item">
+
+            <ul style="slds-is-relative;" key={item.subCatId} class="slds-dropdown__list" role="menu"
+                aria-label="Menu Item Three">
+                <li class="slds-dropdown__header slds-dropdown__item" role="presentation">
+                    <a role="menuitem" tabindex="0">
+                        {item.subCatName}
+                    </a>
+                </li>
+
+                <template if:true={item.subSubCateList} for:each={item.subSubCateList} for:item="itm">
+                    <li key={itm.Id} class="slds-dropdown__item" role="presentation">
+                        <a onclick={handleNavigateSubCategory} data-id={itm.Id} href="#" role="menuitem"
+                            tabindex="-1">
+                            {itm.Name}
+                        </a>
+                    </li>
+                </template>
+
+    <!-- <li class="slds-has-divider_top-space" role="separator"></li> -->
+    </ul>
+    </template>
+
+    <template if:true={showNoSubCategory}>
+            <ul>
+                <li if:true={showNoSubCategory} class="slds-dropdown__item" role="presentation">
+                    No Sub-Category Found
+                </li>
+
+            </ul>
+
+        </template>
+</div>
+
+</template>

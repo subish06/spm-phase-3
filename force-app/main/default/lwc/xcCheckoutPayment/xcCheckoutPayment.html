@@ -1,0 +1,73 @@
+<template>
+    <!-- This version shows a text box and can display errors -->
+    <div class="slds-box" if:false={hidePurchaseOrder}>
+        <input type="radio" id="po-number" value={paymentTypes.poNumber} name="payment-type-option"
+            onclick={handlePaymentTypeSelected} checked={isPoNumberSelected} />
+        <label class="slds-radio__label slds-p-horizontal_x-small" for="po-number">
+            <span class="slds-form-element__label slds-text-title_bold">{labels.purchaseOrderOptionLabel}</span>
+        </label>
+
+        <div class="slds-p-top_medium" if:true={isPoNumberSelected}>
+
+            <!-- Purchase Order Error Message -->
+            <div if:true={_purchaseOrderErrorMessage}
+                class="purchase-order-error slds-scoped-notification slds-media slds-media_center slds-theme_error"
+                role="alert">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <p>{_purchaseOrderErrorMessage}</p>
+                </div>
+            </div>
+
+            <lightning-input data-po-number type="text" name="PONumberInput" label={labels.purchaseOrderEntryHeader}
+                value={purchaseOrderNumber} onblur={handleUpdate} max-length="80" class="slds-m-bottom_small">
+            </lightning-input>
+
+            <!-- <div if:false={hideBillingAddress} class="slds-form-element">
+                <lightning-combobox name="billTo" label="Bill To" value={billingAccountId} placeholder="Select Bill To"
+                    options={options} onchange={billingAddressChanged}></lightning-combobox>
+            </div> -->
+
+            <label class="slds-radio__label slds-p-horizontal_x-small" for="billing Address">
+                <span class="slds-form-element__label slds-text-title_bold">Select Billing Address</span>
+            </label>
+
+            <div class="slds-box">
+                <lightning-radio-group class="slds-radio_button-group slds-radio_button__label" type="radio" name="shipTo" variant="label-hidden" options={options}
+                    onchange={billingAddressOnChanged}>
+                </lightning-radio-group>
+            </div>
+
+            <!-- <div if:false={hideBillingAddress} class="slds-form-element">
+                <c-billing-address-selector
+                    addresses={addresses}
+                    onsetbillingaddress={handleChangeSelectedAddress}
+                    billing-address-required={billingAddressRequired}
+                    billing-address-error-message={billingAddressErrorMessage}
+                >
+                </c-billing-address-selector>
+            </div> -->
+            <br />
+            <lightning-button variant="brand" label={nextButtonLabel} title={nextButtonLabel}
+                onclick={handlePaymentButton} disabled={isSubmitOrderDisable}></lightning-button>
+        </div>
+    </div>
+
+    <div class="slds-box slds-m-top_large" if:true={showCreditCard}>
+        <input type="radio" id="card-payment" value={paymentTypes.cardPayment} name="payment-type-option"
+            onclick={handlePaymentTypeSelected} checked={isCardPaymentSelected} />
+        <label class="slds-radio__label slds-p-horizontal_x-small" for="card-payment">
+            <span class="slds-form-element__label slds-text-title_bold">{labels.cardPaymentOptionLabel}</span>
+        </label>
+        <div class="slds-p-top_medium" if:true={isCardPaymentSelected}>
+            <c-xc-stripe-payment-l-w-c cart-id={_cartId}>
+            </c-xc-stripe-payment-l-w-c>
+            <div if:false={hideBillingAddress} class="slds-form-element">
+                <lightning-combobox name="billTo" label="Bill To" value={billingAccountId} placeholder="Select Bill To"
+                    options={options} onchange={billingAddressChanged}></lightning-combobox>
+            </div>
+        </div>
+    </div>
+</template>

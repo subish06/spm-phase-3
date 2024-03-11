@@ -1,0 +1,349 @@
+<template>
+    <template lwc:if={managerList.length}>
+        <div style="font-size: 14px;font-weight: bold;">Business Development Managers</div>
+        <lightning-tabset variant="scoped" class="tabset-1 slds-p-around_medium">
+            <lightning-tab label="Monthly">
+                <div style="display: flex;overflow-x: scroll; padding-bottom:10px">
+                    <template for:each={managerList} for:item="item">
+                        <div key={item.Id} class={item.class} style="min-width: 320px;
+                        max-width: 320px;width: 100%;
+                            display: flex" onclick={handleClick} data-user-id={item.userId} data-user-name={item.name}
+                            data-fy={item.fy} data-bdd={item.bdd}>
+                            <div style="width:40%;">
+                                <div class="slds-avatar slds-avatar_circle avatar slds-align_absolute-center">
+                                    <img src={item.url} alt={item.name} />
+                                </div>
+                                <div class="slds-p-top_x-small slds-align_absolute-center"
+                                    style="text-align:center; font-weight: bold">{item.name}</div>
+                            </div>
+                            <div class="slds-var-m-around_x-small" style="width:60%;padding-left: 12px;">
+                                <h3 class="slds-align_absolute-left">
+                                    <p class="target-highlight">Target :<span
+                                            style="font-weight: bold; padding-left: 20px;">{item.targetAmount}</span>
+                                    </p>
+                                </h3>
+                                <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                                    <p class="actuals-highlight">Actuals :<span
+                                            style="font-weight: bold; padding-left: 15px;">{item.actualAmount}</span>
+                                    </p>
+                                </h3>
+                                <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                                    <p class="variance-highlight">Variance :
+                                        <span style="font-weight: bold; padding-left: 8px;">{item.varianceAmount}
+                                            <template if:true={item.displayArrow}>
+
+                                                <template if:true={item.varianceArrow}>
+                                                    <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                        size="xx-small"></lightning-icon>
+                                                </template>
+                                                <template if:false={item.varianceArrow}>
+                                                    <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
+                                                        size="xx-small">
+                                                    </lightning-icon>
+                                                </template>
+                                            </template>
+                                        </span>
+                                    </p>
+                                </h3>
+                                <template if:true={item.isBDMSelected}>
+                                    <template lwc:if={isEditDisable}>
+                                        <lightning-button-group class="slds-p-top_x-small">
+                                            <template lwc:if={switchBdm}>
+                                                <lightning-button label="Switch as BDD" size="medium"
+                                                    title="Switch back as BDD" icon-name="utility:change_owner"
+                                                    onclick={switchToBDM}>
+                                                </lightning-button>
+                                            </template>
+                                            <template lwc:else>
+                                                <lightning-button label="Switch as BDM" size="medium"
+                                                    title="Switch as BDM" icon-name="utility:change_owner"
+                                                    onclick={switchToBDM}>
+                                                </lightning-button>
+                                            </template>
+                                        </lightning-button-group>
+                                    </template>
+                                    <template lwc:else>
+                                        <lightning-button-group class="slds-align_absolute-center slds-p-top_x-small"
+                                            style="padding-right: 100px;padding-top: 25px;">
+                                            <lightning-button-icon label="Download" title="Download" size="medium"
+                                                icon-name="utility:download" onclick={handleDownload}>
+                                            </lightning-button-icon>
+
+                                            <template if:false={getFYDisabled}>
+                                                <lightning-button-icon label="Upload" title="Upload" size="medium"
+                                                    onclick={openUploadDialog} icon-name="utility:upload">
+                                                </lightning-button-icon>
+
+                                                <template lwc:if={showUploadDialog}>
+                                                    <section role="dialog" tabindex="-1"
+                                                        aria-labelledby="modal-heading-01" aria-modal="true"
+                                                        aria-describedby="modal-content-id-1"
+                                                        class="slds-modal slds-fade-in-open ">
+                                                        <div class="slds-modal__container">
+                                                            <header class="slds-modal__header">
+                                                                <button
+                                                                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                                                    title="Close" onclick={openUploadDialog}>
+                                                                    <lightning-icon icon-name="utility:close"
+                                                                        alternative-text="close" variant="inverse"
+                                                                        size="small"></lightning-icon>
+                                                                    <span class="slds-assistive-text">Close</span>
+                                                                </button>
+                                                                <h2 id="modal-heading-01"
+                                                                    class="slds-text-heading_medium slds-hyphenate">
+                                                                    Upload
+                                                                    CSV</h2>
+                                                            </header>
+
+                                                            <div class="slds-modal__content slds-p-around_medium spinnerclass"
+                                                                id="modal-content-id-1">
+                                                                <template lwc:if={isLoading}>
+                                                                    <div class="spinnerLoading">
+                                                                        <lightning-spinner alternative-text="Loading"
+                                                                            size="medium" variant="brand"
+                                                                            class="spinnerClass">
+                                                                        </lightning-spinner>
+                                                                    </div>
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <div class="custom-input-container">
+                                                                        <lightning-input
+                                                                            style="display:flex; justify-content:center; "
+                                                                            type="file" accept=".csv"
+                                                                            onchange={handleUpload}>
+                                                                        </lightning-input>
+                                                                    </div>
+                                                                    <template lwc:if={showAcknowledge}>
+                                                                        <div
+                                                                            class="slds-p-top_medium slds-align_absolute-center">
+                                                                            <lightning-input type="checkbox"
+                                                                                onchange={handleCheckbox}
+                                                                                label={labelText} name={labelText}>
+                                                                            </lightning-input>
+                                                                        </div>
+                                                                    </template>
+
+                                                                </template>
+                                                            </div>
+
+                                                            <footer class="slds-modal__footer">
+                                                                <button class="slds-button slds-button_neutral"
+                                                                    onclick={openUploadDialog}>Cancel</button>
+                                                            </footer>
+
+                                                        </div>
+                                                    </section>
+                                                    <div class="slds-backdrop slds-backdrop_open"></div>
+
+                                                </template>
+
+                                            </template>
+                                            <template lwc:if={switchBdm}>
+                                                <lightning-button-icon label="Switch back as BDD" size="medium"
+                                                    title="Switch back as BDD" icon-name="utility:change_owner"
+                                                    onclick={switchToBDM}>
+                                                </lightning-button-icon>
+                                            </template>
+                                            <template lwc:else>
+                                                <lightning-button-icon label="Switch as BDM" size="medium"
+                                                    title="Switch as BDM" icon-name="utility:change_owner"
+                                                    onclick={switchToBDM}>
+                                                </lightning-button-icon>
+                                            </template>
+                                            <template lwc:if={ifStatusNull}>
+                                                <lightning-button-icon label="Acknowledge" size="medium"
+                                                    title="Not yet sent" style={buttonStyle} icon-name="utility:alert">
+                                                </lightning-button-icon>
+                                            </template>
+                                            <template lwc:else>
+                                                <lightning-button-icon label="Acknowledge" size="medium"
+                                                    title={ackStatus} style={buttonStyle} icon-name="utility:alert"
+                                                    onclick={handleAckTracking}>
+                                                </lightning-button-icon>
+                                            </template>
+                                        </lightning-button-group>
+                                    </template>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <template lwc:if={isAckTable}>
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                        aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open slds-modal_small">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    title="Close" onclick={closePopup}>
+                                    <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                        size="small"></lightning-icon>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 class="slds-text-heading_medium slds-hyphenate">{userName} Acknowledgement History
+                                </h2>
+                            </header>
+
+                            <div class="slds-modal__content slds-p-around_small" id="modal-content-id-3">
+                                <lightning-datatable key-field="id" data={ackHistory} columns={ackColumns}
+                                    hide-checkbox-column>
+                                </lightning-datatable>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <lightning-button label="Cancel" title="" onclick={closePopup}
+                                    class="slds-m-left_x-small"></lightning-button>
+                            </footer>
+                        </div>
+                    </section>
+
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </template>
+
+                <template if:false={switchBdm}>
+                    <template if:true={showSec}>
+                        <c-spm_bdd_month_summary financial-year={selectedFinancialYear} current-b-d-d={currentUser}
+                            selected-b-d-m={selectedBdm} currency-symbol={currencySymbol} onsave={handleSave}
+                            onmonthsummaryevent={handleChildEvntMonthSummary} is-edit-disable={isEditDisable}
+                            hide-edit-button={hideBDMEditButton} user-name={userName}>
+                        </c-spm_bdd_month_summary>
+                    </template>
+                </template>
+
+                <template if:true={switchBdm}>
+                    <lightning-card>
+                        <div
+                            style=" background: repeating-linear-gradient(16deg, rgb(84,105,141), rgb(84,105,141) 20px, rgba(84,105,141,.97) 20px, rgba(84,105,141,.97) 40px);">
+                            <p style="display: flex; justify-content: center; color:#FFFFFF; font-size: medium;"
+                                class="slds-p-around_x-small">
+                                Viewing data as {userName}
+                            </p>
+                        </div>
+                    </lightning-card>
+                    <c-spm_bdm_accounts current-user={selectedBdm} financial-year={selectedFinancialYear}
+                        currency-symbol={currencySymbol} hide-button={hideButtons}></c-spm_bdm_accounts>
+                </template>
+
+            </lightning-tab>
+            <lightning-tab label="Quarterly">
+                <div style="display: flex;overflow-x: scroll; padding-bottom:10px">
+                    <template for:each={managerList} for:item="item">
+                        <div key={item.Id} class={item.class} style="min-width: 320px;
+                        max-width: 320px;width: 100%;
+                            display: flex" onclick={handleClick} data-user-id={item.userId} data-user-name={item.name}
+                            data-fy={item.fy} data-bdd={item.bdd}>
+                            <div style="width:40%;">
+                                <div class="slds-avatar slds-avatar_circle avatar slds-align_absolute-center">
+                                    <img src={item.url} alt={item.name} />
+                                </div>
+                                <div class="slds-p-top_x-small slds-align_absolute-center"
+                                    style="text-align:center; font-weight: bold">{item.name}</div>
+                            </div>
+
+                            <div class="slds-var-m-around_x-small" style="width:60%;padding-left: 12px;">
+                                <h3 class="slds-align_absolute-left">
+                                    <p class="target-highlight">Target :<span
+                                            style="font-weight: bold; padding-left: 20px;">{item.targetAmount}</span>
+                                    </p>
+                                </h3>
+                                <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                                    <p class="actuals-highlight">Actuals :<span
+                                            style="font-weight: bold; padding-left: 15px;">{item.actualAmount}</span>
+                                    </p>
+                                </h3>
+                                <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                                    <p class="variance-highlight">Variance :
+                                        <span style="font-weight: bold; padding-left: 8px;">{item.varianceAmount}
+                                            <template if:true={item.displayArrow}>
+
+                                                <template if:true={item.varianceArrow}>
+                                                    <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                        size="xx-small"></lightning-icon>
+                                                </template>
+                                                <template if:false={item.varianceArrow}>
+                                                    <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
+                                                        size="xx-small">
+                                                    </lightning-icon>
+                                                </template>
+                                            </template>
+                                        </span>
+                                    </p>
+                                </h3>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <template if:true={showSec}>
+                    <c-spm_bdd_quarter_summary financial-year={selectedFinancialYear} current-b-d-d={currentUser}
+                        selected-b-d-m={selectedBdm} currency-symbol={currencySymbol}></c-spm_bdd_quarter_summary>
+                </template>
+            </lightning-tab>
+
+            <lightning-tab label="Yearly">
+                <div style="display: flex;overflow-x: scroll; padding-bottom:10px">
+                    <template for:each={managerList} for:item="item">
+                        <div key={item.Id} class={item.class} style="min-width: 320px;
+                      max-width: 320px;width: 100%;
+                          display: flex" onclick={handleClick} data-user-id={item.userId} data-user-name={item.name}
+                            data-fy={item.fy} data-bdd={item.bdd}>
+                            <div style="width:40%;">
+                                <div class="slds-avatar slds-avatar_circle avatar slds-align_absolute-center">
+                                    <img src={item.url} alt={item.name} />
+                                </div>
+                                <div class="slds-p-top_x-small slds-align_absolute-center"
+                                    style="text-align:center; font-weight: bold">{item.name}</div>
+                            </div>
+
+                            <div class="slds-var-m-around_x-small" style="width:60%;padding-left: 12px;">
+                                <h3 class="slds-align_absolute-left">
+                                    <p class="target-highlight">Target :<span
+                                            style="font-weight: bold; padding-left: 20px;">{item.targetAmount}</span>
+                                    </p>
+                                </h3>
+                                <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                                    <p class="actuals-highlight">Actuals :<span
+                                            style="font-weight: bold; padding-left: 15px;">{item.actualAmount}</span>
+                                    </p>
+                                </h3>
+                                <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                                    <p class="variance-highlight">Variance :
+                                        <span style="font-weight: bold; padding-left: 8px;">{item.varianceAmount}
+                                            <template if:true={item.displayArrow}>
+
+                                                <template if:true={item.varianceArrow}>
+                                                    <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
+                                                        size="xx-small"></lightning-icon>
+                                                </template>
+                                                <template if:false={item.varianceArrow}>
+                                                    <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
+                                                        size="xx-small">
+                                                    </lightning-icon>
+                                                </template>
+                                            </template>
+                                        </span>
+                                    </p>
+                                </h3>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <template if:true={showSec}>
+                    <c-spm_bdd_year_summary financial-year={selectedFinancialYear} current-b-d-d={currentUser}
+                        selected-b-d-m={selectedBdm} currency-symbol={currencySymbol}></c-spm_bdd_year_summary>
+                </template>
+            </lightning-tab>
+        </lightning-tabset>
+
+    </template>
+    <template lwc:else>
+        <lightning-card>
+            <p style="display: flex; justify-content: center;" class="slds-p-around_small">
+                <b>Unfortunately, it appears that you have no Managers assigned to your account. Please contact your
+                    administrator
+                    to request the necessary access.</b>
+            </p>
+        </lightning-card>
+    </template>
+
+</template>

@@ -1,0 +1,23 @@
+<template>
+    
+    <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle}
+                         active-section-name={activeSection}>
+        <lightning-accordion-section name="ordInfo" label="Orders Information">
+            <div>
+                <div class="slds-grid slds-gutters">
+                    <lightning-datatable data={visibleOrders} columns={columns} key-field="Id" sorted-by={sortBy}
+                        sorted-direction={sortDirection} onsort={handleSort} hide-checkbox-column="true">
+                    </lightning-datatable>
+                </div>
+
+                <div slot="footer" class="slds-var-m-vertical_medium">
+                    <c-Xc-Pagination-Utils records={orderData} record-size="10" onupdate={updateOrderHandler}>
+                    </c-Xc-Pagination-Utils>
+                </div>
+            </div>
+        </lightning-accordion-section>
+
+    </lightning-accordion>
+   
+
+</template>

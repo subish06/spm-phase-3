@@ -1,0 +1,20 @@
+.cat-header{
+    font-size: 30px;
+}
+.container{
+    background-color: #c3cad6;
+
+
+}
+
+
+ul:not(.browser-default) {
+    padding-left: 0px;
+    list-style-type: none;
+}
+
+.popup {
+    position: absolute;
+    display: none;
+    /* Additional styling for the popup */
+}

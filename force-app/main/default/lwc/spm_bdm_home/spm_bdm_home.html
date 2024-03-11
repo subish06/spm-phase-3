@@ -1,0 +1,154 @@
+<template>
+    <lightning-card>
+        <h1 slot="title">Hi, {firstName} {lastName}</h1>
+        <template lwc:if={overallAccountSummary}>
+            <lightning-button slot="actions" label="Back" title="Back" onclick={handleOverallAccountSummary}
+                class="slds-m-left_x-small slds-float_right">
+            </lightning-button>
+        </template>
+        <template lwc:else>
+            <lightning-button slot="actions" label="View Overall Summary" title="View Overall Summary"
+                onclick={handleOverallAccountSummary} class="slds-m-left_x-small slds-float_right">
+            </lightning-button>
+
+            <lightning-button-group slot="actions">
+                <template lwc:if={showButton}>
+                    <lightning-button label="Accept" title="Accept" onclick={acceptPopup}></lightning-button>
+                    <lightning-button label="Revert" title="Revert" onclick={revertPopup}></lightning-button>
+                </template>
+                <template lwc:else>
+                    <template lwc:if={acceptDisable}>
+                        <lightning-button label="Accepted" title="Accepted" disabled></lightning-button>
+                    </template>
+                    <template lwc:if={revertDisable}>
+                        <lightning-button label="Reverted" title="Reverted" disabled></lightning-button>
+                    </template>
+                </template>
+
+            </lightning-button-group>
+
+        </template>
+
+        <template lwc:if={isPopupOpen}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closePopup}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <template if:true={ifAccept}>
+                            <h2 class="slds-text-heading_medium slds-hyphenate">Target Acceptance </h2>
+                        </template>
+                        <template if:true={ifRevert}>
+                            <h2 class="slds-text-heading_medium slds-hyphenate">Revert Target </h2>
+                        </template>
+
+                    </header>
+
+                    <div if:true={ifAccept} class="slds-modal__content" id="modal-content-id-2">
+                        <p class="slds-align_absolute-center slds-p-around_small" style="font-size: initial;">
+                            Are you sure you want to accept target for {selYear}?</p>
+                        <lightning-textarea name="Comments" label="Comments" onchange={handleComments}
+                            class="slds-p-around_small" placeholder="type accept reason here..."></lightning-textarea>
+                    </div>
+                    <div if:true={ifRevert} class="slds-modal__content" id="modal-content-id-3">
+                        <p class="slds-align_absolute-center slds-p-around_small" style="font-size: initial;">
+                            Are you sure you want to revert target for {selYear}?</p>
+                        <lightning-textarea name="Comments" message-when-value-missing="This field is required."
+                            required={ifRevert} label="Comments" onchange={handleComments} class="slds-p-around_small"
+                            placeholder="type revert reason here..."></lightning-textarea>
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <template lwc:if={isLoading}>
+                            <lightning-button variant="brand" label="Saving..." title="Saving..." disabled="true"
+                                class="slds-m-left_x-small"></lightning-button>
+                        </template>
+                        <template lwc:else>
+                            <lightning-button variant="brand" label="Save" title="Save" disabled={getFYDisabled}
+                                onclick={targetAcknowledge} class="slds-m-left_x-small"></lightning-button>
+                        </template>
+
+                        <lightning-button label="Cancel" title="Cancel" onclick={closePopup}
+                            class="slds-m-left_x-small"></lightning-button>
+                    </footer>
+                </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <div class="custom-box slds">
+            <lightning-layout multiple-rows style="padding-top: 16px;padding-bottom: 16px;">
+                <lightning-layout-item size="2" style="text-align: right;padding-top: 8px;">Financial Year
+                    :</lightning-layout-item>
+                <lightning-layout-item style="padding-left: 8px;padding-right: 8px;" size="1">
+                    <lightning-combobox name="yearSelection" value={selYear} style="padding-top: 7px;"
+                        options={financialYearPickList} placeholder="Financial Year" onchange={handleFYChange}
+                        variant="label-hidden">
+                    </lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item size="9">
+                    <span style="display: flex;justify-content: left;padding-top: 4px; padding-left: 24px;">
+                        <div class="even-badge">
+                            <span class="badge-content"><span class="badge-label">Target :</span>
+                                <span class="badge-value">{stats.curYearTarget}</span></span>
+                        </div>
+                        <div class="actual-badge">
+                            <span class="badge-content"><span class="badge-label">Actual :</span>
+                                <span class="badge-value">{stats.curYearActual}</span></span>
+                        </div>
+                        <div class="pending-badge">
+                            <span class="badge-content"><span class="badge-label">Variance :</span>
+                                <span class="badge-value">{stats.curYearVariance}</span>
+                                <template if:true={stats.showVarianceArrow}>
+                                    <template if:true={stats.varianceArrow}>
+                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup" size="xx-small">
+                                        </lightning-icon>
+                                    </template>
+                                    <template if:false={stats.varianceArrow}>
+                                        <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
+                                            size="xx-small"></lightning-icon>
+                                    </template>
+                                </template>
+                            </span>
+                        </div>
+                        <div class="regular-badge">
+                            <span class="badge-content"><span class="badge-label">Target Achieved
+                                    :</span>
+                                <span class="badge-value">{stats.targetAchieved}</span></span>
+                        </div>
+                        <div class="regular-badge">
+                            <span class="badge-content"><span class="badge-label">Total Accounts :</span>
+                                <span class="badge-value">{stats.totalAccount}</span></span>
+                        </div>
+                    </span>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <div class="container2 slds-p-vertical_medium slds-m-vertical_medium" style="padding-top: 0px;margin-top: 0px;">
+            <div class="slds-p-top_small; display: flex;">
+                <lightning-spinner lwc:if={showSpinner} variant="brand" size="medium">
+                </lightning-spinner>
+                <template lwc:elseif={overallAccountSummary}>
+                    <div tabindex="0">
+                        <c-spm_bdd_month_summary financial-year={selYear} current-b-d-d={respectiveBDD}
+                            hide-edit-button={hideBDMEditButton} selected-b-d-m={userId}
+                            currency-symbol={currencySymbol} onmonthsummaryevent={handleChildEvntMonthSummary}>
+                        </c-spm_bdd_month_summary>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="slds-scrollable_y" tabindex="0">
+                        <c-spm_bdm_accounts current-user={userId} financial-year={selYear}
+                            currency-symbol={currencySymbol} hide-button={hideButton}></c-spm_bdm_accounts>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>

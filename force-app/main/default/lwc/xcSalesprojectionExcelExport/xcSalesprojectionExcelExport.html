@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title="Export Excel File">
+        
+            <div class="exp_align">
+                <lightning-input type="string" name="Invoice Account" class="invacct-number" label="Invoice Account"
+                    value=""></lightning-input>
+            </div>
+       
+        <div class="exp_align">
+            
+                <lightning-input type="string" name="Business Unit" class="business-unit" label="Business Unit"
+                    value=""></lightning-input>
+            </div>
+        
+        <div class="exp_align">
+            
+                <lightning-input type="string" name="Fiscal Year" class="fiscal-year" label="Fiscal Year" value="">
+                </lightning-input>
+            
+        </div>
+        <div class="exp_align">
+            <div class="slds-m-top_medium">
+                <lightning-button variant="brand" label="Export" title="Export" onclick={exportData}
+                    class="slds-m-left_none"></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

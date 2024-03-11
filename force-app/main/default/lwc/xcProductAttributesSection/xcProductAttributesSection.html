@@ -1,0 +1,24 @@
+<template>
+    <div class="slds-m-around_medium summary-list-container">
+      <lightning-layout-item>  
+        <template for:each={section} for:item="sec">
+          <div key={sec}>  
+            <div class="group">
+              <div class="slds-m-top_large">
+                <h2>{sec.Name}</h2>
+              </div>
+              <div class="summary-list">
+                <template for:each={sec.SectionItems} for:item="item">
+                    <div key={item}>
+                        <div class="summary-list-item">{item.Label}:</div>
+                        <div class="summary-list-item">{item.Value}</div>
+                    </div>                    
+                </template>                
+              </div>
+            </div> 
+          </div>
+        </template>  
+      </lightning-layout-item>
+    </div>
+  
+  </template>

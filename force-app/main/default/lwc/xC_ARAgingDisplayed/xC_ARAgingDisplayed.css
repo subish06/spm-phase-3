@@ -1,0 +1,61 @@
+.headerMainDetails .tableHeader, .headerMinorDetails .tableHeader
+{
+    text-align: center;
+    background-color: #5f779c;
+    color: white;
+}
+
+.headerMainDetails, .headerMainDetails th, .headerMainDetails td, .headerMinorDetails, .headerMinorDetails th, .headerMinorDetails td, .itemListTable, .itemListTable th, .itemListTable td
+{
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+.itemListTable .tableHeader
+{
+    text-align: center;
+    background-color: #86764e;
+    color: white;
+}
+
+.Current th
+{
+    border-bottom: 1px solid #5f779c;
+    border-collapse: collapse;
+    text-align: right;
+    color: #5f779c;
+    padding-left: 20px;
+    padding-right: 10px;
+}
+.pageHeader th
+{
+    text-align: right;
+    color: #5f779c;
+    padding-right: 10px;
+}
+
+.defaultData
+{
+    text-align: center;
+    
+}
+.clickable{
+    cursor: pointer;
+}
+.dateRange
+{
+    /* border-bottom: 1px solid #03060b;
+    border-collapse: collapse; */
+    /* width: 150%; */
+    text-align: left;
+    color: #000206;
+    text-decoration: underline;
+    /* padding-left: 2px; */
+    /* padding-right: 10px; */
+}
+
+.invoiceList
+{
+    margin-top: 10px;
+    text-align: left;
+    font-weight: bold
+}

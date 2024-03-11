@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+
+    <masterLabel>B2B - Stripe Payment</masterLabel>
+    <description>This is the custom payment component</description>
+    <targets>
+        <target>lightning__FlowScreen</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="cartId" type="String" label="cart Id" description="id of the cart. Used for Checkout Flow"/>
+        </targetConfig>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="invoiceId" type="String" label="invoice Id" description="id of the invoice. Used for Invoice Payment"/>
+            <property name="cartId" type="String" label="cart Id" description="id of the cart. Used for Checkout Flow"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

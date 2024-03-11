@@ -1,0 +1,130 @@
+.invoiceCardBody
+{
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.headerMainDetails .tableHeader, .headerMinorDetails .tableHeader
+{
+    text-align: center;
+    background-color: #5f779c;
+    color: white;
+}
+
+.itemListTable .tableHeader
+{
+    text-align: center;
+    background-color: #86764e;
+    color: white;
+}
+
+.headerMainDetails, .headerMainDetails th, .headerMainDetails td, .headerMinorDetails, .headerMinorDetails th, .headerMinorDetails td, .itemListTable, .itemListTable th, .itemListTable td
+{
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+
+.priceTable
+{
+    border: 1px solid #5f779c;
+    border-collapse: collapse;
+}
+
+.priceTable th
+{
+    border-bottom: 1px solid #5f779c;
+    border-collapse: collapse;
+    text-align: right;
+    color: #5f779c;
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+.pageHeader th
+{
+    text-align: right;
+    color: #5f779c;
+    padding-right: 10px;
+}
+
+.pageHeader td
+{
+    text-align: right;
+}
+
+.priceTable td
+{
+    border-bottom: 1px solid #5f779c;
+    border-collapse: collapse;
+    text-align: right;
+    background-color: #d4dfea;
+    padding-left: 30px;
+    /*padding-right: 30px;*/
+}
+
+.headerMainDetails .defaultData, .headerMinorDetails .defaultData
+{
+    text-align: center;
+    background-color: #d4dfea;
+}
+
+.headerMainDetails .linkData, .headerMinorDetails .linkData
+{
+    text-align: center;
+    background-color: #d4dfea;
+    text-decoration: underline;
+}
+
+.itemListTable .defaultData
+{
+    text-align: center;
+    background-color: #dbd4c1;
+}
+
+.itemListTable .qtyAmountData
+{
+    text-align: right;
+    background-color: #dbd4c1;
+}
+
+.paymentButton
+{
+    float: right;
+}
+
+lightning-button.paymentButton{
+    --sds-c-button-brand-color-background: orange;
+}
+
+h2 {
+    color: #84734d;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.summary-list-container {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.summary-list > div {
+    align-content: stretch;
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: normal;
+    width: 100%;
+}
+
+.summary-list-item {
+    border-bottom: 1px solid #555;
+    padding-bottom: .5rem;
+    padding-top: .5rem;
+    width: 50%;
+}
+
+.summary-list-item:nth-child(even) {
+    text-align: right;
+}

@@ -1,0 +1,89 @@
+<template>
+    <template if:true={showModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container xcModalContainer">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate accentText">{labels.RMAModalHeader}</h2>
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={toggleModal}>
+                        <lightning-icon icon-name="utility:close"
+                                  alternative-text="close"
+                                  variant="inverse"
+                                  size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                      </button>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium slds-is-relative xcModalContent" id="modal-content-id-1">
+                    <template if:true={showSpinner}>
+                        <lightning-spinner alternative-text="Loading, Please Wait" size="medium" variant="brand" class="spinnerClass"></lightning-spinner>
+                    </template>
+                    <lightning-layout multiple-rows="true" horizontal-align="spread">
+                        <lightning-layout-item padding="around-small">
+                            <h3 class="slds-text-heading_medium">Order Number: {order.OrderNumber}</h3>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small">
+                            <lightning-combobox
+                                class=""
+                                autocomplete="password"
+                                name="country"
+                                label={labels.RMAReasonDropdownLabel}
+                                value=""
+                                placeholder="--SELECT--"
+                                options={rmaOptions}
+                                onchange={handleRMAOptionChange}>
+                            </lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="slds-border_bottom">
+                            <lightning-layout horizontal-align="spread" vertical-align="end">
+                                <lightning-layout-item size="5" padding="around-small">
+                                    <h4 class="slds-text-heading_medium">Product Name</h4>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="3" padding="around-small">
+                                    <h4 class="slds-text-heading_medium">SKU</h4>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="2" padding="around-small">
+                                    <h4 class="slds-text-heading_medium">Ordered Qty</h4>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="2" padding="around-small">
+                                    <h4 class="slds-text-heading_medium">Return Qty</h4>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </lightning-layout-item>
+                        <template for:each={orderItems} for:item="lineItem">
+                            <lightning-layout-item size="12" key={lineItem.Id}>
+                                <lightning-layout horizontal-align="spread" vertical-align="end">
+                                    <lightning-layout-item size="5" padding="around-small">
+                                        <h4 data-id={lineItem.Id}>{lineItem.Product2.Name}</h4>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="3" padding="around-small">
+                                        <h4 data-id={lineItem.Id}>{lineItem.Product2.StockKeepingUnit}</h4>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="2" padding="around-small">
+                                        <h4 data-id={lineItem.Id}>{lineItem.Quantity}</h4>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="2" padding="around-small">
+                                        <lightning-input data-id={lineItem.Id} data-max={lineItem.Quantity} class="qtyInput" type="number" label="quantity" variant="label-hidden" value="0" onchange={handleQtyChange}></lightning-input>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </lightning-layout-item>
+                        </template>
+                    </lightning-layout>
+                    
+                </div>
+                <footer class="slds-modal__footer">
+                    <!-- class="slds-m-left_x-small" -->
+                    
+                    <lightning-button class="slds-m-around_x-small" label="Cancel" title="Cancel" onclick={toggleModal}></lightning-button>
+                    <lightning-button class="slds-m-around_x-small" variant="brand" label={labels.RMACreateButtonLabel} title={labels.RMACreateButtonLabel} onclick={checkRMAData} disabled={showSpinner}></lightning-button>
+                    <!-- <template if:true={showReturnDisclaimer}> -->
+                        <div class="slds-m-around_x-small">*{labels.ReturnSubjectToReview}</div>
+                    <!-- </template> -->
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <div class="rmaButtonDiv">
+        <lightning-button class="slds-float_right" variant="brand" label={labels.RMAButtonLabel} title={labels.RMAButtonLabel} onclick={toggleModal}></lightning-button>
+    </div>
+    
+</template>
