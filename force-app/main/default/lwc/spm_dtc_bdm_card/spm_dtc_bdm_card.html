@@ -1,9 +1,9 @@
 <template>
     <div style="font-size: 14px;font-weight: bold;">Sub Channels</div>
 
-    <lightning-tabset variant="scoped" class="tabset-1 slds-p-around_medium">
-        <lightning-tab label="Monthly">
-            <div style="display: flex;overflow-x: scroll; padding-bottom:10px">
+    <!-- <lightning-tabset variant="scoped" class="tabset-1 slds-p-around_medium">
+        <lightning-tab label="Monthly"> -->
+            <div style="display: flex;overflow-x: scroll; padding-top: 16px;padding-bottom: 10px">
                 <template for:each={subChanList} for:item="item">
                     <div key={item.name} class={item.class} style="min-width: 260px;
                             max-width: 260px;width: 100%;display: flex" onclick={handleClick}
@@ -23,7 +23,7 @@
                                     :<span style="font-weight: bold; padding-left: 15px;">{item.actualAmount}</span>
                                 </p>
                             </h3>
-                            <h3 class="slds-align_absolute-left slds-p-top_x-small">
+                            <h3 class="slds-align_absolute-left slds-p-top_x-small" style="padding-bottom:20px">
                                 <p class="variance-highlight slds-p-top_x-small slds-align_absolute-center">Variance :
                                     <span style="font-weight: bold; padding-left: 8px;">{item.varianceAmount}
                                         <template if:true={item.displayArrow}>
@@ -44,7 +44,7 @@
                                 </p>
 
                             </h3>
-                            <template if:true={item.isBDMSelected}>
+                            <!-- <template if:true={item.isBDMSelected}>
                                 <template lwc:if={isEditDisable}>
                                     <lightning-button-group class="slds-align_absolute-center slds-p-top_x-small">
                                         <template lwc:if={switchAccount}>
@@ -104,7 +104,7 @@
                                                             </template>
                                                             <template lwc:else>
                                                                 <div class="custom-input-container">
-                                                                    <!-- class="file-selector-image" -->
+                                                                    class="file-selector-image"
                                                                     <lightning-input
                                                                         style="display:flex; justify-content:center; "
                                                                         type="file" accept=".csv"
@@ -135,19 +135,8 @@
                                             </template>
 
                                         </template>
-                                        <template lwc:if={switchAccount}>
-                                            <lightning-button-icon label="Switch back as Subchannel View" size="medium"
-                                                title="Switch back as Subchannel View" icon-name="utility:change_owner"
-                                                onclick={switchToAccount}>
-                                            </lightning-button-icon>
-                                        </template>
-                                        <template lwc:else>
-                                            <lightning-button-icon label="Switch as Account View" size="medium"
-                                                title="Switch as Account View" icon-name="utility:change_owner"
-                                                onclick={switchToAccount}>
-                                            </lightning-button-icon>
-                                        </template>
-                                        <!-- <template lwc:if={ifStatusNull}>
+                                      
+                                        <template lwc:if={ifStatusNull}>
                                             <lightning-button-icon label="Acknowledge" size="medium"
                                                 title="Not yet sent" style={buttonStyle} icon-name="utility:alert">
                                             </lightning-button-icon>
@@ -157,11 +146,11 @@
                                                 style={buttonStyle} icon-name="utility:alert"
                                                 onclick={handleAckTracking}>
                                             </lightning-button-icon>
-                                        </template> -->
+                                        </template> 
                                     </lightning-button-group>
                                 </template>
 
-                            </template>
+                            </template> -->
                         </div>
                     </div>
                 </template>
@@ -232,131 +221,16 @@
                     <div class="slds-backdrop slds-backdrop_open"></div>
                 </template> -->
 
-            <template if:false={switchAccount}>
                 <template if:true={showSec}>
-                    <c-spm_dtc_month_summary financial-year={selectedFinancialYear} current-b-d-d={currentUser}
-                        selected-sub-channel={selectedSubChannel} currency-symbol={currencySymbol} onsave={handleSave}
-                        onmonthsummaryevent={handleChildEvntMonthSummary} is-edit-disable={isEditDisable}
-                        hide-edit-button={hideBDMEditButton} user-name={userName}>
-                    </c-spm_dtc_month_summary>
-                </template>
-            </template>
-
-                <template if:true={switchAccount}>
-                    <lightning-card>
-                        <div style="background: repeating-linear-gradient(16deg, rgb(84,105,141), rgb(84,105,141) 20px, rgba(84,105,141,.97) 20px, rgba(84,105,141,.97) 40px);">
-                            <p style="display: flex; justify-content: center; color:#FFFFFF; font-size: medium;" class="slds-p-around_x-small">
-                                Viewing data as {selectedSubChannel} 
-                                 <b style="color: white;"> </b> 
-                        </p>
-                    </div>
-                    </lightning-card>
                     <c-spm_dtc_accounts sub-channel ={selectedSubChannel} logged-user ={currentUser} financial-year={selectedFinancialYear}
-                        currency-symbol={currencySymbol} hide-button ={hideButtons} is-bdm={isBdm}></c-spm_dtc_accounts>
+                    currency-symbol={currencySymbol} hide-button ={hideButtons} is-bdm ={isBdm}></c-spm_dtc_accounts>
                 </template>
 
-        </lightning-tab>
-        <lightning-tab label="Quarterly">
-            <div style="display: flex;overflow-x: scroll; padding-bottom:10px">
-                <template for:each={subChanList} for:item="item">
-                    <div key={item.name} class={item.class} style="min-width: 260px;
-                            max-width: 260px;width: 100%;display: flex" onclick={handleClick}
-                        data-user-name={item.name} data-fy={item.fy} data-bdd={item.bdd}>
+         
 
-                        <div class="slds-var-m-around_x-small" style="width:100%;">
-                            <h3 class="slds-align_absolute-left">
-                                <p class="slds-p-top_x-small slds-align_absolute-center"
-                                    style="text-align:center; font-weight: bold;font-size: 17px;">{item.name}</p>
-                                <p class="target-highlight slds-p-top_x-small slds-align_absolute-center"
-                                    style="border-top: 1px solid #cfcfcf;;margin-top: 10px;">Target :<span
-                                        style="font-weight: bold; padding-left: 20px;">{item.targetAmount}</span>
-                                </p>
-                            </h3>
-                            <h3 class="slds-align_absolute-left slds-p-top_x-small">
-                                <p class="actuals-highlight slds-p-top_x-small slds-align_absolute-center">Actuals
-                                    :<span style="font-weight: bold; padding-left: 15px;">{item.actualAmount}</span>
-                                </p>
-                            </h3>
-                            <h3 class="slds-align_absolute-left slds-p-top_x-small" style="margin-bottom: 10px;">
-                                <p class="variance-highlight slds-p-top_x-small slds-align_absolute-center">Variance :
-                                    <span style="font-weight: bold; padding-left: 8px;">{item.varianceAmount}
-                                        <template if:true={item.displayArrow}>
-
-                                            <template if:true={item.varianceArrow}>
-                                                <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
-                                                    size="xx-small"></lightning-icon>
-                                            </template>
-                                            <template if:false={item.varianceArrow}>
-                                                <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
-                                                    size="xx-small">
-                                                </lightning-icon>
-                                            </template>
-                                        </template>
-                                    </span>
-                                </p>
-                            </h3>
-                        </div>
-                    </div>
-                </template>
-            </div>
-
-            <template if:true={showSec}>
-                <c-spm_dtc_quarter_summary financial-year={selectedFinancialYear} current-b-d-d={currentUser}
-                    selected-sub-channel={selectedSubChannel}
-                    currency-symbol={currencySymbol}></c-spm_dtc_quarter_summary>
-            </template>
-        </lightning-tab>
-
-        <lightning-tab label="Yearly">
-            <div style="display: flex;overflow-x: scroll; padding-bottom:10px">
-                <template for:each={subChanList} for:item="item">
-                    <div key={item.name} class={item.class} style="min-width: 260px;
-                            max-width: 260px;width: 100%;display: flex" onclick={handleClick}
-                        data-user-name={item.name} data-fy={item.fy} data-bdd={item.bdd}>
-
-                        <div class="slds-var-m-around_x-small" style="width:100%;">
-                            <h3 class="slds-align_absolute-left">
-                                <p class="slds-p-top_x-small slds-align_absolute-center"
-                                    style="text-align:center; font-weight: bold;font-size: 17px;">{item.name}</p>
-                                <p class="target-highlight slds-p-top_x-small slds-align_absolute-center"
-                                    style="border-top: 1px solid #cfcfcf;;margin-top: 10px;">Target :<span
-                                        style="font-weight: bold; padding-left: 20px;">{item.targetAmount}</span>
-                                </p>
-                            </h3>
-                            <h3 class="slds-align_absolute-left slds-p-top_x-small">
-                                <p class="actuals-highlight slds-p-top_x-small slds-align_absolute-center">Actuals
-                                    :<span style="font-weight: bold; padding-left: 15px;">{item.actualAmount}</span>
-                                </p>
-                            </h3>
-                            <h3 class="slds-align_absolute-left slds-p-top_x-small" style="margin-bottom: 10px;">
-                                <p class="variance-highlight slds-p-top_x-small slds-align_absolute-center">Variance :
-                                    <span style="font-weight: bold; padding-left: 8px;">{item.varianceAmount}
-                                        <template if:true={item.displayArrow}>
-
-                                            <template if:true={item.varianceArrow}>
-                                                <lightning-icon class="my-icon-up" icon-name="utility:arrowup"
-                                                    size="xx-small"></lightning-icon>
-                                            </template>
-                                            <template if:false={item.varianceArrow}>
-                                                <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
-                                                    size="xx-small">
-                                                </lightning-icon>
-                                            </template>
-                                        </template>
-                                    </span>
-                                </p>
-                            </h3>
-                        </div>
-                    </div>
-                </template>
-            </div>
-
-            <template if:true={showSec}>
-                      <c-spm_dtc_year_summary financial-year={selectedFinancialYear} current-b-d-d={currentUser}
-                      selected-sub-channel={selectedSubChannel} currency-symbol={currencySymbol} ></c-spm_dtc_year_summary>
-                  </template>
-        </lightning-tab>
-    </lightning-tabset>
+        <!-- </lightning-tab>
+        
+    </lightning-tabset> -->
 
     <!-- </template> -->
     <!-- <template lwc:else>

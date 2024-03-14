@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Invoiced_Value__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(TEXT( Order__r.XC_Order_Status__c )= &apos;Invoiced&apos;,
+Order_Product__r.Quantity *  Order_Product__r.UnitPrice ,
+0
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Invoiced Value</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

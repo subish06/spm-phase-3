@@ -17,8 +17,8 @@ public class DTCController {
         for(CurrencyType currType : [SELECT Id,IsoCode, ConversionRate FROM CurrencyType]) {
             currTypeMap.put(currType.IsoCode, currType.ConversionRate);
         }
-        system.debug(' AccountMap.get(UserInfo.getUserId()===>'+ AccountMap.get(UserInfo.getUserId()));
-        AggregateResult agrResult = [SELECT CurrencyIsoCode,SUM(Target__c) totalAmount FROM Target_Config__c WHERE Financial_Year__c =: selYear AND account__r.XC_Channel__c = 'DTC' //account__c = : AccountMap.get(UserInfo.getUserId()
+        
+        AggregateResult agrResult = [SELECT CurrencyIsoCode,SUM(Target__c) totalAmount FROM Target_Config__c WHERE Financial_Year__c =: selYear AND account__r.XC_Channel__c = 'DTC' 
                                      GROUP BY CurrencyIsoCode]; // BDD__c =: UserInfo.getUserId()
         system.debug('agrResult'+ agrResult);
         String currencyIsoCode = (String)agrResult.get('CurrencyISOCode');
@@ -52,7 +52,7 @@ public class DTCController {
     }
     
     @AuraEnabled(Cacheable = true)
-    public static Map<String,Object> getSubChannelStats(String financialYear, Id currentUser) {
+    public static Map<String,Object> getSubChannelStats(String financialYear, Id currentUser, Boolean isBDM) {
         
         Map<String, Object> accMap = new Map<String, Object>();
         Map<String, Decimal> currTypeMap = new Map<String, Decimal>();
@@ -62,40 +62,77 @@ public class DTCController {
         
         for(CurrencyType currType : [SELECT Id,IsoCode, ConversionRate FROM CurrencyType]) {
             currTypeMap.put(currType.IsoCode, currType.ConversionRate);   
+        }        
+        if(isBDM){
+            
+            for(Account acc : [Select Sub_Channel__c from account where XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND OwnerId = :currentUser]) {
+                accMap.put(acc.Sub_Channel__c, new Map<String, Object>());
+            }
+            
+            for(
+                AggregateResult aggr : 
+                [SELECT Sub_Channel__c, SUM(Target__c) FROM Target_Config__c  
+                 WHERE Business_Unit__c != null AND Level__c ='BDM' AND Business_Unit__r.Available_for_Target__c = True AND 
+                 BDM__c =: currentUser AND Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
+                 GROUP BY Sub_Channel__c]
+            ) { 
+                targetMap.put((String)aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
+            }
+            
+            for(
+                AggregateResult aggr : 
+                [SELECT Sub_Channel__c, SUM(Actual_Amount__c) FROM SPM_Stats__c    
+                 WHERE Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND 
+                 BDM__c =: currentUser AND Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
+                 GROUP BY Sub_Channel__c]
+            ) { 
+                actualMap.put((String) aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
+            }
+            
+            for(
+                AggregateResult aggr : 
+                [SELECT Sub_Channel__c,  SUM(Variance_Amount__c) FROM Target_Config__c        
+                 WHERE Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND 
+                 BDM__c =: currentUser AND  Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
+                 GROUP BY Sub_Channel__c]
+            ) { 
+                varianceMap.put((String) aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
+            }
         }
-        
-        for(Account acc : [Select Sub_Channel__c from account where XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL]) {
-            accMap.put(acc.Sub_Channel__c, new Map<String, Object>());
-        }
-        
-        for(
-            AggregateResult aggr : 
-            [SELECT Sub_Channel__c, SUM(Target__c) FROM Target_Config__c  
-             WHERE Business_Unit__c != null AND Level__c ='BDM' AND Business_Unit__r.Available_for_Target__c = True AND 
-             BDD__c =: currentUser AND Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
-             GROUP BY Sub_Channel__c]
-        ) { 
-            targetMap.put((String)aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
-        }
-        
-        for(
-            AggregateResult aggr : 
-            [SELECT Sub_Channel__c, SUM(Actual_Amount__c) FROM SPM_Stats__c    
-             WHERE Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND 
-             BDD__c =: currentUser AND Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
-             GROUP BY Sub_Channel__c]
-        ) { 
-            actualMap.put((String) aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
-        }
-        
-        for(
-            AggregateResult aggr : 
-            [SELECT Sub_Channel__c,  SUM(Variance_Amount__c) FROM Target_Config__c        
-             WHERE Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND 
-             BDD__c =: currentUser AND  Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
-             GROUP BY Sub_Channel__c]
-        ) { 
-            varianceMap.put((String) aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
+        else{
+            
+            for(Account acc : [Select Sub_Channel__c from account where XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL]) {
+                accMap.put(acc.Sub_Channel__c, new Map<String, Object>());
+            }
+            for(
+                AggregateResult aggr : 
+                [SELECT Sub_Channel__c, SUM(Target__c) FROM Target_Config__c  
+                 WHERE Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND 
+                 BDD__c =: currentUser AND Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
+                 GROUP BY Sub_Channel__c]
+            ) { 
+                targetMap.put((String)aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
+            }
+            
+            for(
+                AggregateResult aggr : 
+                [SELECT Sub_Channel__c, SUM(Actual_Amount__c) FROM SPM_Stats__c    
+                 WHERE Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND 
+                 BDD__c =: currentUser AND Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
+                 GROUP BY Sub_Channel__c]
+            ) { 
+                actualMap.put((String) aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
+            }
+            
+            for(
+                AggregateResult aggr : 
+                [SELECT Sub_Channel__c,  SUM(Variance_Amount__c) FROM Target_Config__c        
+                 WHERE Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND 
+                 BDD__c =: currentUser AND  Account__r.XC_Channel__c = 'DTC' AND Sub_Channel__c != NULL AND Financial_Year__c =: financialYear
+                 GROUP BY Sub_Channel__c]
+            ) { 
+                varianceMap.put((String) aggr.get('Sub_Channel__c'),(Decimal) aggr.get('expr0')!= null ? (Decimal) aggr.get('expr0') : 0);
+            }
         }
         
         for (String key : accMap.keySet()) {
@@ -106,6 +143,7 @@ public class DTCController {
             
             accMap.put(key, values);                    
         }
+        
         return accMap;                
     }
     
@@ -115,14 +153,12 @@ public class DTCController {
         String currencyVal = 'USD';
         String prevFYCurrencyVal = 'USD';
         
-        
-        
         Map<String, BDMTargetDist> BDMTargetDistMap = new Map<String, BDMTargetDist>();
         for(Account acc : [SELECT Id, ownerId, sub_channel__c, XC_Channel__c FROM Account WHERE XC_Channel__c = 'DTC' AND sub_channel__c != null]) {
             BDMTargetDistMap.put(acc.sub_channel__c, new BDMTargetDist(acc.Id, acc.sub_channel__c,acc.XC_Channel__c, 0));
         }
         
-        for(Target_Distribution__c targetDist : [SELECT Id, Allocated_Percentage__c, BDM__c, CurrencyIsoCode FROM Target_Distribution__c WHERE Financial_Year__c =: financialYear AND BDD__c =: currentUser AND BDM__c IN : BDMTargetDistMap.keySet()]) {
+        for(Target_Distribution__c targetDist : [SELECT Id, Allocated_Percentage__c, BDM__c, CurrencyIsoCode, Sub_channel__c FROM Target_Distribution__c WHERE Financial_Year__c =: financialYear AND BDD__c =: currentUser AND Sub_channel__c IN : BDMTargetDistMap.keySet()]) {
             currencyVal = targetDist.CurrencyIsoCode;
             BDMTargetDistMap.get(targetDist.sub_channel__c).disPercent = targetDist.Allocated_Percentage__c;
         }
@@ -279,43 +315,42 @@ public class DTCController {
     
     @AuraEnabled(Cacheable = true)
     public static Map<String, Object> getBDMstats(String selYear) {
-       
+        
         String currencyVal = 'USD';
         Decimal targetAchieved = 0;
         Map<Id,Id> AccountMap = new map<Id,Id>();
         
-        for (Account acc : [Select id,ownerId from account where XC_Channel__c = 'DTC']){
+        for (Account acc : [Select id,ownerId from account where XC_Channel__c = 'DTC' and sub_channel__c != null]){
             AccountMap.put(acc.ownerId,acc.id);
         }
-       
-        AggregateResult agrResult = [SELECT SUM(Target__c) totalAmount FROM Target_Config__c
-                                     WHERE Financial_Year__c =: selYear AND account__c = : AccountMap.get(UserInfo.getUserId())];
+        
+        AggregateResult agrResult = [SELECT SUm(Target__c) totalAmount FROM Target_Config__c WHERE Financial_Year__c =: selYear AND BDM__c =: UserInfo.getUserId() AND Account__r.XC_Channel__c = 'DTC' AND Account__r.XC_AccountStatus__c ='Active' AND Sub_Channel__c != null];
         Decimal curYearTarget = (Decimal) agrResult.get('totalAmount');
         curYearTarget = curYearTarget != null ? curYearTarget : 0;
-       	
-        agrResult = [SELECT SUM(Overall_Actuals__c) totalAmount FROM Target_Config__c WHERE Financial_Year__c =: selYear AND account__c = : AccountMap.get(UserInfo.getUserId())];
+        
+        agrResult = [SELECT SUM(Overall_Actuals__c) totalAmount FROM Target_Config__c WHERE  Financial_Year__c =: selYear AND BDM__c =: UserInfo.getUserId() AND Account__r.XC_Channel__c = 'DTC' AND Account__r.XC_AccountStatus__c ='Active' AND Sub_Channel__c != null];
         Decimal curYearActual = (Decimal) agrResult.get('totalAmount');
         curYearActual = curYearActual != null ? curYearActual : 0;
-       
-        agrResult = [SELECT SUM(Variance_Amount__c) totalAmount FROM Target_Config__c WHERE Financial_Year__c =: selYear AND account__c = : AccountMap.get(UserInfo.getUserId())];
+        
+        agrResult = [SELECT SUM(Variance_Amount__c) totalAmount FROM Target_Config__c WHERE  Financial_Year__c =: selYear AND BDM__c =: UserInfo.getUserId() AND Account__r.XC_Channel__c = 'DTC' AND Account__r.XC_AccountStatus__c ='Active' AND Sub_Channel__c != null];
         Decimal curYearvariance = (Decimal) agrResult.get('totalAmount');
         curYearvariance = curYearvariance != null ? curYearvariance : 0;
-       
+        
         agrResult = [SELECT COUNT(OwnerId) totalAmount FROM Account WHERE OwnerId =: UserInfo.getUserId() AND Authorized_Business_Units__c != NULL AND ParentId = NULL AND XC_AccountStatus__c = 'Active'];
         Decimal totalAccount = (Decimal) agrResult.get('totalAmount');
         totalAccount = totalAccount != null ? totalAccount : 0;
-       
+        
         if (curYearTarget != 0) {
             targetAchieved = (curYearActual/curYearTarget)*100;
             targetAchieved = targetAchieved != null ? targetAchieved : 0;
         }
-       
+        
         for(Target_Config__c tarConfig : [SELECT CurrencyIsoCode FROM Target_Config__c
                                           WHERE Financial_Year__c =: selYear AND BDM__c =: UserInfo.getUserId()]){
                                               currencyVal = tarConfig.CurrencyIsoCode;      
                                           }
         Map<String, Object> result = new Map<String, Object>();
-       
+        
         result.put('curYearTarget', curYearTarget);
         result.put('curYearActual', curYearActual);
         result.put('curYearVariance', curYearvariance);
@@ -324,8 +359,8 @@ public class DTCController {
         result.put('currencyVal', currencyVal);
         return result;
     }
-
-@AuraEnabled(Cacheable = true)
+    
+    @AuraEnabled(Cacheable = true)
     public static Map<String,Object> getSubChannelBDMStats(String financialYear, Id currentUser) {
         
         Map<String, Object> accMap = new Map<String, Object>();
@@ -383,6 +418,6 @@ public class DTCController {
         }
         return accMap;                
     }
-   
+    
     
 }

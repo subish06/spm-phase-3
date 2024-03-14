@@ -37,6 +37,7 @@ export default class Spm_dtc_account_summary extends LightningElement {
     @api selectedAccount;
     @api currencySymbol;
     @api hideButton;
+    @api isBdm;
 
     @track activeTabValue = 'Summary';
     @track tempActiveTabValue;
@@ -134,7 +135,7 @@ export default class Spm_dtc_account_summary extends LightningElement {
         return gridColumnList;
     }
 
-    @wire(getTargetSubChannel, { financialYear: '$financialYear', loggedUser: '$loggedUser', accountId: '$selectedAccount', subChannel: '$subChannel' })
+    @wire(getTargetSubChannel, { financialYear: '$financialYear', loggedUser: '$loggedUser', accountId: '$selectedAccount', subChannel: '$subChannel', isBDM:'$isBdm' })
     wiredTargetData(result) {
         if (result.data) {
             this.targetData = [];
@@ -169,7 +170,7 @@ export default class Spm_dtc_account_summary extends LightningElement {
         }
     }
 
-    @wire(getActualsSubChannel, { financialYear: '$financialYear', loggedUser: '$loggedUser', accountId: '$selectedAccount', subChannel: '$subChannel' })
+    @wire(getActualsSubChannel, { financialYear: '$financialYear', loggedUser: '$loggedUser', accountId: '$selectedAccount', subChannel: '$subChannel' , isBDM:'$isBdm' })
     wiredActualsData(result) {
         if (result.data) {
             this.actualData = [];
@@ -205,7 +206,7 @@ export default class Spm_dtc_account_summary extends LightningElement {
         }
     }
 
-    @wire(getVarianceBDM, { financialYear: '$financialYear', loggedUser: '$loggedUser', accountId: '$selectedAccount', subChannel: '$subChannel' })
+    @wire(getVarianceBDM, { financialYear: '$financialYear', loggedUser: '$loggedUser', accountId: '$selectedAccount', subChannel: '$subChannel' , isBDM:'$isBdm' })
     wiredVarianceData(result) {
 
         if (result.data) {

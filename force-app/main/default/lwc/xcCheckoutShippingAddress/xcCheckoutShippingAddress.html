@@ -1,36 +1,21 @@
 <template>
-
-	<template if:true={hasData}>
-		<!-- <lightning-button data-address-type="shipping_address" class="new-add-btn" variant="Brand"
-			onclick={handleOpenCloseModal} label="Add New Addr" title="newAddress"></lightning-button>-->
-		<!-- Changes made by Sangeet : Start -->
-		<!-- <lightning-button data-address-type="shipping_address" class="new-add-btn slds-p-bottom_small" variant="Brand" label="Edit Address"
-			title="Update Address" address-type={typeOfAddress} onclick={handleOpenCloseModal} disabled={disableEditButton}></lightning-button> -->
-		<!--End of Change-->
-		<div class="slds-form-element__label">Ship To</div>
-		<div style="padding-top: 10px;">
-			<div class="slds-box">
-				<lightning-radio-group class="slds-radio_button-group slds-radio_button__label" type="radio" name="shipTo" variant="label-hidden" options={options}
-					onchange={shippingAddressChanged}>
-				</lightning-radio-group>
-			</div>
-			<div class="slds-form-element__label">Requested Ship Date</div>
-			<lightning-input class="requestedShipDate" type="date" name="requestedShipDate" variant="label-hidden"
-				label="Requested Ship Date" value={requestedShipDate} min={minDate} onchange={updateRequestedShipDate}>
-			</lightning-input>
-		</div>
-
-
-		<lightning-button class="new-add-btn slds-p-around_medium" variant="Brand" label="Next"
-			onclick={handleFlowNavigation} disabled={disableEditButton}></lightning-button>
-
-		<!--<div class="slds-form-element__label">Delivery Instructions</div>
+    <template if:true={hasData}>
+        <div class="slds-form-element__label">Ship To</div>
+        <div class="slds-box">
+            <lightning-radio-group 
+                type="radio"
+                name="shipTo"
+                label="Ship To"
+                variant="label-hidden"
+                options={options}
+                value={shippingAccountId}
+                onchange={shippingAddressChanged}
+                >
+            </lightning-radio-group>
+        </div>
+        <div class="slds-form-element__label">Requested Ship Date</div>
+        <lightning-input class="requestedShipDate" type="date" name="requestedShipDate" variant="label-hidden" label="Requested Ship Date" value={requestedShipDate} min={minDate} onchange={updateRequestedShipDate}></lightning-input>
+        <!--<div class="slds-form-element__label">Delivery Instructions</div>
         <lightning-textarea value={shippingInstructions} name="deliveryInstructions" variant="label-hidden" label="Delivery Instructions" placeholder="Cross street, security code, etc..." onchange={handleTextAreaOnchange}></lightning-textarea>-->
-	</template>
-
-
-	<!-- <template if:true={showHideAddrModal}>
-		<c-xc-address-record-modal onclosemodalevent={handleOpenCloseModal} account-id={accountId}
-			selected-address={selectedAddress} type-of-address={typeOfAddress}></c-xc-address-record-modal>
-	</template> -->
+    </template>
 </template>

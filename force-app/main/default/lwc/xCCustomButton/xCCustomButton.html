@@ -1,27 +1,14 @@
 <template>
     <div class="slds-m-around_x-small">
         <div>
-            <!-- <span><lightning-button type = "Button" variant="brand" class="slds-m-bottom_large" label="START REORDER" title="START REORDER"
+           <!-- <span><lightning-button type = "Button" variant="brand" class="slds-m-bottom_large" label="START REORDER" title="START REORDER"
             onclick={startReorder}></lightning-button></span> 
             <span><a href={url}  target="_self">View Details</a></span> -->
-            <lightning-button type="Button" variant="brand" class="slds-m-bottom_large" label="START REORDER"
-                title="START REORDER" onclick={startReorder}></lightning-button>
+            <lightning-button type = "Button" variant="brand" class="slds-m-bottom_large" label="START REORDER" title="START REORDER"
+            onclick={startReorder}></lightning-button>
         </div>
         <div class="slds-m-horizontal_medium">
-            <a href={url} target="_self" onmouseout={handleMouseout} onmouseover={handleMouseover}>View Details</a>
-        </div>
+            <a href={url}  target="_self">View Details</a>
+        </div>      
     </div>
-    <!--On Mouse hover display the Order lines in a pop up-->
-    <template if:true={hover}>
-        <div class="slds-box">
-            <c-xc-show-order-details record-id={id}></c-xc-show-order-details>
-            <!-- Tooltip-->
-            <!-- <div style="display:none;position: absolute;opacity:0" class="ModelTooltip">
-
-            </div> -->
-            <!-- <lightning-output-field field-name="Name" onmouseout={handleMouseout} onmouseover={handleMouseover}>
-            </lightning-output-field> -->
-        </div>
-
-    </template>
 </template>

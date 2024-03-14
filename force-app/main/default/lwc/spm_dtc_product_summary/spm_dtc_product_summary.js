@@ -26,6 +26,7 @@ export default class Spm_dtc_product_summary extends LightningElement {
     @api hideButton;
     @api businessUnitId;
     @api refreshTable;
+    @api isBdm;
 
     @track showWarning = false;
     @track isPending = false;

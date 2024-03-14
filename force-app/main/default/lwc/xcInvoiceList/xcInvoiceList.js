@@ -11,16 +11,6 @@ export default class XcInvoiceList extends LightningElement
     isValid;
     calledOnce = false;
     @track invoiceList;
-    @track filteredInvoiceLists;
-    @track showSelected = false;
-    @track selectedPaymentStatus = '-none-';
-    paymentStatusOptions = [
-        { label: '-none-', value: '-none-' },
-        { label: 'Unpaid', value: 'Unpaid' },
-        { label: 'Paid', value: 'Paid' },
-        { label: 'In Progress', value: 'Payment In Progress' }
-    ];
-
     validateDate(){
         let isValid =true;
         if(this.enddate){
@@ -36,26 +26,6 @@ export default class XcInvoiceList extends LightningElement
                 startField.reportValidity();
             }
         }
-    }
-
-    // get filteredInvoiceLists() {
-    //     return this.invoiceList.filter(item => item.XC_Status__c == 'Unpaid');
-    // }
-
-    handleCheckboxChange(event) {
-        this.showSelected = event.target.checked;
-    }
-
-    handlePicklistChange(event) {
-        this.selectedPaymentStatus = event.detail.value;
-        this.showSelected = true;
-
-        if(event.detail.value == '-none-') {
-            this.filteredInvoiceLists = this.invoiceList;
-        } else {
-            this.filteredInvoiceLists = this.invoiceList.filter(item => item.XC_Status__c == event.detail.value);
-        }
-        // You can perform additional actions based on the selected value
     }
 
     invoiceList = [];
@@ -99,8 +69,6 @@ export default class XcInvoiceList extends LightningElement
 
             this.invoiceList = dataList;
             this.showSpinner = false;
-            console.log('isSelected -->',this.showSelected);
-            console.log('spinner -->',this.showSpinner);
             console.log('this,invoiceList :'+JSON.stringify(this.invoiceList));
         })
         .catch((e) => {
@@ -112,7 +80,7 @@ export default class XcInvoiceList extends LightningElement
                     mode: 'dismissable'
                 })
             );
-            console.log(e);
+            //console.log(e);
         });
     
     }

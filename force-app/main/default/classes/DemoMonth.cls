@@ -614,8 +614,7 @@ public class DemoMonth {
         Map<String, TargetCommitWrapper> monthPrdWrap = new Map<String, TargetCommitWrapper>();
         Map<Id, Decimal> productPriceMap = new Map<Id, Decimal>();
         
-        
-        List<Account> accList = [SELECT Id, XC_PricingGroup__c,OwnerId FROM Account WHERE Id =: accountId];
+        List<Account> accList = [SELECT Id, XC_PricingGroup__c,OwnerId, XC_AccountStatus__c FROM Account WHERE Id =: accountId AND XC_AccountStatus__c = 'Active'];
         if(accList.isEmpty()) {
             throw new AuraHandledException('Account is Empty');
         }
@@ -641,7 +640,7 @@ public class DemoMonth {
             targetCommitList =[Select Id,Account__c,BDM__c,Product__c,Finish__c,SKU__c,Product_Business_Unit__c,Description__c, Jan__c, May__c, Dec__c, Nov__c, Oct__c, Sep__c,
                                Aug__c, Feb__c, Jul__c, Jun__c,Mar__c, Apr__c,IsUpload__c, Product__r.Start_Date__c,Non_Available_Product__c from Target_Commit_Stats__c  
                                WHERE IsUpload__c = false AND Product__r.Available_for_commitment__c = True AND Financial_Year__c =: financialYear AND Account__c =: accountId AND BDM__c =: selectedUser 
-                               ORDER BY Product_Business_Unit__c ASC];
+                               ORDER BY Product_Business_Unit__c ASC];            
         }
         else{
             targetCommitList =[Select Id,Account__c,BDM__c,Product__c,Finish__c,SKU__c,Product_Business_Unit__c,Description__c, Jan__c, May__c, Dec__c, Nov__c, Oct__c, Sep__c,

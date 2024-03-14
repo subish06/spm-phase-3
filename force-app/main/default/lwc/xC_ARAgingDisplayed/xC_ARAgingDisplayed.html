@@ -1,10 +1,10 @@
 <template>
     
-    <!-- <lightning-accordion
+    <lightning-accordion
             active-section-name=''
-            allow-multiple-sections-open> -->
-            <!-- <lightning-accordion-section name="ARDisplay" label="AR Aging Invoices"> -->
-                <table if:true={showInvoicePopup} class="slds-m-top_small headerMinorDetails">
+            allow-multiple-sections-open>
+            <lightning-accordion-section name="ARDisplay" label="AR Aging Invoices">
+                <table class="slds-m-top_small headerMinorDetails">
                     
                     <!--tr><th>Days Overdue</th></tr>-->
                     <tr>
@@ -45,10 +45,10 @@
               <div>
                 
             </div>
-              <div>
+              <div if:true={showInvoicePopup}>
                 <c-xc-invoice-list start-date={startDate} enddate={endDate}></c-xc-invoice-list>
               </div>
             
-    <!-- </lightning-accordion-section> -->
-<!-- </lightning-accordion> -->
+    </lightning-accordion-section>
+</lightning-accordion>
 </template>

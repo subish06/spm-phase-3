@@ -1,45 +1,37 @@
 <template>
-    <h1 class="slds-page-header__title slds-m-around_medium" style="margin-left: 0px !important">Invoices</h1>
+    <h1 class="slds-page-header__title slds-m-around_medium">Invoices</h1>
 
     <!--Ticket No GB-126-->
     <div class="slds-grid">
         <div class="slds-col slds-size_1-of-12 filterCss">
-            <h1>
+            <h1 >
                 Filter By Date:
             </h1>
         </div>
         <div class="slds-col slds-size_2-of-12 slds-m-around_medium">
-            <lightning-input type="date" name="Start Date" class="start-date" label="Start Date" value={startDate}
-                onchange={handleDateChange}></lightning-input>
+            <lightning-input type="date" name="Start Date" class="start-date"  label="Start Date"  value={startDate} onchange={handleDateChange}></lightning-input>
         </div>
         <div class="slds-col slds-size_2-of-12 slds-m-around_medium">
-            <lightning-input type="date" name="End Date" class="end-date" label="End Date" value={enddate}
-                onchange={handleDateChange}></lightning-input>
+            <lightning-input type="date" name="End Date" class="end-date" label="End Date" value={enddate} onchange={handleDateChange}></lightning-input>
         </div>
         <div class="slds-col slds-size_1-of-12 filterCss">
-            <lightning-button variant="brand" label="Apply" title="Apply Filters" onclick={handleClick}
-                class="slds-m-left_x-small applyButton"></lightning-button>
+            <lightning-button variant="brand" label="Apply" title="Apply Filters" onclick={handleClick} class="slds-m-left_x-small applyButton" ></lightning-button>
         </div>
         <div class="slds-col slds-size_1-of-12 filterCss">
-            <lightning-button variant="base" label="Reset" title="Reset Filter"
-                onclick={handleReset}></lightning-button>
-        </div>
-        <div class="slds-col slds-size_2-of-12 slds-m-around_medium">
-            <lightning-select label="Payment Status" name="paymentStatus" value={selectedPaymentStatus}
-                options={paymentStatusOptions} onchange={handlePicklistChange}></lightning-select>
+            <lightning-button variant="base" label="Reset" title="Reset Filter" onclick={handleReset} ></lightning-button>
         </div>
     </div>
     <!-- Ended for GB-126 -->
-    <lightning-spinner if:true={showSpinner} alternative-text="Please Wait" size="medium" variant="brand">
+    <lightning-spinner
+        if:true={showSpinner}
+        alternative-text="Please Wait"
+        size="medium"
+        variant="brand">
     </lightning-spinner>
-    <!-- <template if:false={showSpinner} > -->
-    <template lwc:if={showSelected} for:each={filteredInvoiceLists} for:item="invoice">
-        <c-xc-invoice key={invoice.Id} invoice={invoice}>
+    <template if:false={showSpinner} for:each={invoiceList} for:item="invoice">
+        <c-xc-invoice
+            key={invoice.Id}
+            invoice={invoice}>
         </c-xc-invoice>
     </template>
-    <template lwc:else for:each={invoiceList} for:item="invoice">
-        <c-xc-invoice key={invoice.Id} invoice={invoice}>
-        </c-xc-invoice>
-    </template>
-    <!-- </template> -->
 </template>

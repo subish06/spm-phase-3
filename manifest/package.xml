@@ -76,6 +76,8 @@
         <members>spm_bdm_product_table</members>
         <members>spm_dtc_home</members>
         <members>spm_dtc_card</members>
+        <members>spm_dtc_bdm_home</members>
+        <members>spm_dtc_bdm_card</members>
         <members>spm_dtc_month_summary</members>
         <members>spm_dtc_quarter_summary</members>
         <members>spm_dtc_year_summary</members>

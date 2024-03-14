@@ -8,15 +8,3 @@
     letter-spacing: .0625rem;
     padding: 0.5rem;
 }
-.new-add-btn{
-    float: right;
-}
-
-.slds-radio_button-group{
-    border: none;
-}
-
-.slds-radio_button__label {
-    font-size: 20px;
-    border-radius: 0.50rem !important;
-}

@@ -15,7 +15,7 @@ const ackColumns = [
     { label: 'Comments', fieldName: 'comments', type: 'string' }
 ];
 
-export default class Spm_dtc_card extends LightningElement {
+export default class Spm_dtc_bdm_card extends LightningElement {
 
     ackColumns = ackColumns;
     subChannelList = [];
@@ -29,6 +29,8 @@ export default class Spm_dtc_card extends LightningElement {
     @api currentUser;
     @api selectedFinancialYear;
     @api isEditDisable;
+    @api isBdm;
+
     @track ackStatus;
     @track selectedSubChannel;
     @track userName = '';
@@ -43,10 +45,9 @@ export default class Spm_dtc_card extends LightningElement {
     @track isAckTable = false;
     @track ifStatusNull = false;
     @track showAcknowledge = false;
-    @track isBdm = false;
+    
 
     connectedCallback() {
-        this.isBdm = false;
         this.addEventListener('childevent', this.handleChildEvent.bind(this));
     }
 
@@ -118,7 +119,7 @@ export default class Spm_dtc_card extends LightningElement {
     // }
 
     fetchBDMStats() {
-        getSubChannelStats({ currentUser: this.currentUser, financialYear: this.selectedFinancialYear, isBDM : false })
+        getSubChannelStats({ currentUser: this.currentUser, financialYear: this.selectedFinancialYear, isBDM : this.isBdm })
             .then(data => {
                 this.subChannelList = [];
 
@@ -161,7 +162,7 @@ export default class Spm_dtc_card extends LightningElement {
 
     }
 
-    @wire(prepareBDMStats, { currentUser: '$currentUser', financialYear: '$selectedFinancialYear', isBDM:false })
+    @wire(prepareBDMStats, { currentUser: '$currentUser', financialYear: '$selectedFinancialYear', isBDM: '$isBdm' })
     wiredBDMUsers({ data, error }) {
         if (data) {
             this.fetchBDMStats();

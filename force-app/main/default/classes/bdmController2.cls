@@ -1,7 +1,7 @@
 public class bdmController2 {
     
     @AuraEnabled(Cacheable = true)
-    Public static Boolean prepareBDMStats(Id currentUser, String financialYear) {
+    Public static Boolean prepareBDMStats(Id currentUser, String financialYear, Boolean isBDM) {
         return true;
     }
     
@@ -347,7 +347,7 @@ public class bdmController2 {
     
     
     @AuraEnabled(Cacheable = true)
-    public static Map<String, Map<String, Decimal>> getTargetSubChannel(Id loggedUser, String financialYear, Id accountId, String subChannel) {
+    public static Map<String, Map<String, Decimal>> getTargetSubChannel(Id loggedUser, String financialYear, Id accountId, String subChannel, Boolean isBDM) {
         Set<String> monthSet = new Set<String>{'Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'};
             Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap = new Map<String, Map<String, Decimal>>();
        
@@ -358,31 +358,50 @@ public class bdmController2 {
             }
             busUnitMonthSalesTarMap.put(busUnit.Unique_Name__c, monthSalesTarMap);
         }        
-        getTargetSubChannelValues(loggedUser, financialYear, accountId, subChannel, busUnitMonthSalesTarMap);
+        getTargetSubChannelValues(loggedUser, financialYear, accountId, subChannel, busUnitMonthSalesTarMap, isBdm);
        
         return busUnitMonthSalesTarMap;
     }
    
-    private static void getTargetSubChannelValues(Id loggedUser, String financialYear,Id accountId,String subChannel, Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap) {
-        for(
-            AggregateResult aggr :
-            [select Business_Unit__r.Name, Month__c, SUM(Target__c) from Target_Config__c
-             where Business_Unit__c != null AND Level__c ='BDM' AND Business_Unit__r.Available_for_Target__c = true AND Account__c =: accountId AND BDD__C = :loggedUser
-             AND Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear
-             group by Business_Unit__r.Name, Month__c]
-        ) {
-            Decimal target = (Decimal) aggr.get('expr0');
-           
-            busUnitMonthSalesTarMap.get(
-                (String) aggr.get('Name')
-            ).put(
-                (String) aggr.get('Month__c'), target
-            );
+    private static void getTargetSubChannelValues(Id loggedUser, String financialYear,Id accountId,String subChannel, Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap, Boolean isBdm) {
+        if(isBdm){
+            for(
+                AggregateResult aggr :
+                [select Business_Unit__r.Name, Month__c, SUM(Target__c) from Target_Config__c
+                 where Business_Unit__c != null  AND Business_Unit__r.Available_for_Target__c = true AND Account__c =: accountId AND BDM__C = :loggedUser
+                 AND Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear
+                 group by Business_Unit__r.Name, Month__c]
+            ) {
+                Decimal target = (Decimal) aggr.get('expr0');
+                
+                busUnitMonthSalesTarMap.get(
+                    (String) aggr.get('Name')
+                ).put(
+                    (String) aggr.get('Month__c'), target
+                );
+            }
+        }
+        else{
+            for(
+                AggregateResult aggr :
+                [select Business_Unit__r.Name, Month__c, SUM(Target__c) from Target_Config__c
+                 where Business_Unit__c != null AND Level__c ='BDM' AND Business_Unit__r.Available_for_Target__c = true AND Account__c =: accountId AND BDD__C = :loggedUser
+                 AND Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear
+                 group by Business_Unit__r.Name, Month__c]
+            ) {
+                Decimal target = (Decimal) aggr.get('expr0');
+                
+                busUnitMonthSalesTarMap.get(
+                    (String) aggr.get('Name')
+                ).put(
+                    (String) aggr.get('Month__c'), target
+                );
+            }
         }
     }
     
     @AuraEnabled(Cacheable = true)
-    public static Map<String, Map<String, Decimal>> getActualsSubChannel(Id loggedUser, String financialYear, Id accountId, String subChannel) {
+    public static Map<String, Map<String, Decimal>> getActualsSubChannel(Id loggedUser, String financialYear, Id accountId, String subChannel, Boolean isBDM) {
         Set<String> monthSet = new Set<String>{'Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'};
             Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap = new Map<String, Map<String, Decimal>>();
        
@@ -394,31 +413,48 @@ public class bdmController2 {
             busUnitMonthSalesTarMap.put(busUnit.Unique_Name__c, monthSalesTarMap);
         }
        
-        getActualValues(loggedUser, financialYear, accountId, subChannel, busUnitMonthSalesTarMap);
+        getActualValues(loggedUser, financialYear, accountId, subChannel, busUnitMonthSalesTarMap, isBdm);
        
         return busUnitMonthSalesTarMap;
     }
    
-    private static void getActualValues(ID loggedUser, String financialYear, Id accountId, String subChannel, Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap) {
-       
-        for(
-            AggregateResult aggr :
-            [select Business_Unit__r.Name, Month__c, SUM(Overall_Actuals__c) from Target_Config__c
-             where Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND Account__c =: accountId AND BDD__C =: loggedUser AND
-             Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear AND BDD__C = :loggedUser group by Business_Unit__r.Name, Month__c]
-        ) {
-            Decimal target = (Decimal) aggr.get('expr0');
-           
-            busUnitMonthSalesTarMap.get(
-                (String) aggr.get('Name')
-            ).put(
-                (String) aggr.get('Month__c'), target
-            );
+    private static void getActualValues(ID loggedUser, String financialYear, Id accountId, String subChannel, Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap, Boolean isBDM) {
+        if(isBdm){
+            for(
+                AggregateResult aggr :
+                [select Business_Unit__r.Name, Month__c, SUM(Overall_Actuals__c) from Target_Config__c
+                 where Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND Account__c =: accountId AND
+                 Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear AND BDM__C = :loggedUser group by Business_Unit__r.Name, Month__c]
+            ) {
+                Decimal target = (Decimal) aggr.get('expr0');
+                
+                busUnitMonthSalesTarMap.get(
+                    (String) aggr.get('Name')
+                ).put(
+                    (String) aggr.get('Month__c'), target
+                );
+            }
+        }
+        else{
+            for(
+                AggregateResult aggr :
+                [select Business_Unit__r.Name, Month__c, SUM(Overall_Actuals__c) from Target_Config__c
+                 where Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND Account__c =: accountId AND BDD__C =: loggedUser AND
+                 Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear AND BDD__C = :loggedUser group by Business_Unit__r.Name, Month__c]
+            ) {
+                Decimal target = (Decimal) aggr.get('expr0');
+                
+                busUnitMonthSalesTarMap.get(
+                    (String) aggr.get('Name')
+                ).put(
+                    (String) aggr.get('Month__c'), target
+                );
+            }            
         }
     }
    
     @AuraEnabled(Cacheable = true)
-    public static Map<String, Map<String, Decimal>> getVarianceBDM(Id loggedUser, String financialYear, Id accountId, String subChannel) {
+    public static Map<String, Map<String, Decimal>> getVarianceBDM(Id loggedUser, String financialYear, Id accountId, String subChannel, Boolean isBDM) {
         Set<String> monthSet = new Set<String>{'Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'};
             Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap = new Map<String, Map<String, Decimal>>();
        
@@ -430,27 +466,45 @@ public class bdmController2 {
             busUnitMonthSalesTarMap.put(busUnit.Unique_Name__c, monthSalesTarMap);
         }
        
-        getVarianceValues(loggedUser, financialYear, accountId, subChannel, busUnitMonthSalesTarMap);
+        getVarianceValues(loggedUser, financialYear, accountId, subChannel, busUnitMonthSalesTarMap, isBdm);
        
         return busUnitMonthSalesTarMap;
     }
    
-    private static void getVarianceValues(Id loggedUser, String financialYear, Id accountId, String subChannel, Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap) {
-       
-        for(
-            AggregateResult aggr :
-            [select Business_Unit__r.Name, Month__c, SUM(Variance_Amount__c) from Target_Config__c
-             where Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND Account__c =: accountId  AND BDD__C =: loggedUser AND Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear
-             group by Business_Unit__r.Name, Month__c]
-        ) {
-            Decimal target = (Decimal) aggr.get('expr0');
-           
-            busUnitMonthSalesTarMap.get(
-                (String) aggr.get('Name')
-            ).put(
-                (String) aggr.get('Month__c'), target
-            );
+    private static void getVarianceValues(Id loggedUser, String financialYear, Id accountId, String subChannel, Map<String, Map<String, Decimal>> busUnitMonthSalesTarMap, Boolean isBDM) {
+        if(isBdm){
+            for(
+                AggregateResult aggr :
+                [select Business_Unit__r.Name, Month__c, SUM(Variance_Amount__c) from Target_Config__c
+                 where Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND Account__c =: accountId  AND BDM__C =: loggedUser AND Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear
+                 group by Business_Unit__r.Name, Month__c]
+            ) {
+                Decimal target = (Decimal) aggr.get('expr0');
+                
+                busUnitMonthSalesTarMap.get(
+                    (String) aggr.get('Name')
+                ).put(
+                    (String) aggr.get('Month__c'), target
+                );
+            }
         }
+        else{
+            for(
+                AggregateResult aggr :
+                [select Business_Unit__r.Name, Month__c, SUM(Variance_Amount__c) from Target_Config__c
+                 where Business_Unit__c != null AND Business_Unit__r.Available_for_Target__c = True AND Account__c =: accountId  AND BDD__C =: loggedUser AND Sub_Channel__c =: subChannel AND Financial_Year__c =: financialYear
+                 group by Business_Unit__r.Name, Month__c]
+            ) {
+                Decimal target = (Decimal) aggr.get('expr0');
+                
+                busUnitMonthSalesTarMap.get(
+                    (String) aggr.get('Name')
+                ).put(
+                    (String) aggr.get('Month__c'), target
+                );
+            }
+        }
+        
     }
    
     @AuraEnabled(Cacheable = true)

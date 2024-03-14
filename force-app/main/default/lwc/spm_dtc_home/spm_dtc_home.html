@@ -57,7 +57,7 @@
         </div>
         <div style="padding: 1rem;">
             <c-spm_dtc_card current-user={userId} selected-financial-year={selYear} refresh-table={timeoutId}
-                currency-symbol={currencySymbol} is-edit-disable={isEditDisable} onchildevent={handleChildEvent}></c-spm_dtc_card>
+                currency-symbol={prevCurrencySymbol} is-edit-disable={isEditDisable} onchildevent={handleChildEvent}></c-spm_dtc_card>
         </div>
     </lightning-card>
     <template if:false={isPopupOpen}>

@@ -14,6 +14,7 @@ export default class Spm_dtc_accounts extends LightningElement {
     @api financialYear;
     @api currencySymbol;
     @api hideButton;
+    @api isBdm;
 
     @track showSpinner = false;
     @track showAccountSearch = true;

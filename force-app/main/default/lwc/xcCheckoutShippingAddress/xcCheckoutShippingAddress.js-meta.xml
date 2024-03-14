@@ -12,8 +12,6 @@
             <property name="requestedShipDate" label="Requested Ship Date" type="Date" role="outputOnly"/>
             <property name="shippingAccountId" label="Shipping Account Id" type="String" role="outputOnly"/>
             <property name="shippingInstructions" label="Shipping Instructions" type="String" role="outputOnly"/>
-            <property name="test" label="test" type="String" role="outputOnly"/>
-            <property name="contactPointAddressId" label="contactPointAddressId" type="String" role="outputOnly"/>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

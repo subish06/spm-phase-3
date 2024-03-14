@@ -32,6 +32,7 @@ export default class Spm_dtc_product_table extends LightningElement {
     @api currencySymbol;
     @api hideButton;
     @api commitmentAvailable;
+    @api isBdm;
 
     @track showSpinner = false;
     @track noProductMessage = false;

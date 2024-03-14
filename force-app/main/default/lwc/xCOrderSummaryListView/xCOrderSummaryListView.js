@@ -31,32 +31,32 @@ const columns = [{
   fixedWidth: 150,
   sortable: true
 },
-// {
-//   label: 'Requested Ship Date',
-//   fieldName: 'requestedShipDate',
-//   type: 'date-local',
-//   fixedWidth: 150,
-//   sortable: true,  
-//   typeAttributes:
-//   {
-//     day: 'numeric',
-//     month: 'numeric',
-//     year: 'numeric'
-//   }
-// },
-// {
-//   label: 'Estimated Ship Date',
-//   fieldName: 'estimatedShipDate',
-//   type: 'date-local',
-//   fixedWidth: 150,
-//   sortable: true,  
-//   typeAttributes:
-//   {
-//     day: 'numeric',
-//     month: 'numeric',
-//     year: 'numeric'
-//   }
-// },
+{
+  label: 'Requested Ship Date',
+  fieldName: 'requestedShipDate',
+  type: 'date-local',
+  fixedWidth: 150,
+  sortable: true,  
+  typeAttributes:
+  {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric'
+  }
+},
+{
+  label: 'Estimated Ship Date',
+  fieldName: 'estimatedShipDate',
+  type: 'date-local',
+  fixedWidth: 150,
+  sortable: true,  
+  typeAttributes:
+  {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric'
+  }
+},
 {
   label: 'Status',
   fieldName: 'status',

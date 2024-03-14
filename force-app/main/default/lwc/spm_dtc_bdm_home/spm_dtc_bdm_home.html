@@ -1,0 +1,93 @@
+<template>
+    <lightning-card>
+        <h1 slot="title">Hi, {firstName} {lastName}</h1>
+        <!-- <template lwc:if={overallAccountSummary}>
+            <lightning-button slot="actions" label="Back" title="Back" onclick={handleOverallAccountSummary}
+                class="slds-m-left_x-small slds-float_right">
+            </lightning-button>
+        </template>
+        <template lwc:else>
+            <lightning-button slot="actions" label="View Overall Summary" title="View Overall Summary"
+                onclick={handleOverallAccountSummary} class="slds-m-left_x-small slds-float_right">
+            </lightning-button> 
+        </template>-->
+
+
+
+        <div class="custom-box slds">
+            <lightning-layout multiple-rows style="padding-top: 16px;padding-bottom: 16px;">
+                <lightning-layout-item size="2" style="text-align: right;padding-top: 8px;">Financial Year
+                    :</lightning-layout-item>
+                <lightning-layout-item style="padding-left: 8px;padding-right: 8px;" size="1">
+                    <lightning-combobox name="yearSelection" value={selYear} style="padding-top: 7px;"
+                        options={financialYearPickList} placeholder="Financial Year" onchange={handleFYChange}
+                        variant="label-hidden">
+                    </lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item size="9">
+                    <span style="display: flex;justify-content: left;padding-top: 4px; padding-left: 24px;">
+                        <div class="even-badge">
+                            <span class="badge-content"><span class="badge-label">Target :</span>
+                                <span class="badge-value">{stats.curYearTarget}</span></span>
+                        </div>
+                        <div class="actual-badge">
+                            <span class="badge-content"><span class="badge-label">Actual :</span>
+                                <span class="badge-value">{stats.curYearActual}</span></span>
+                        </div>
+                        <div class="pending-badge">
+                            <span class="badge-content"><span class="badge-label">Variance :</span>
+                                <span class="badge-value">{stats.curYearVariance}</span>
+                                <template if:true={stats.showVarianceArrow}>
+                                    <template if:true={stats.varianceArrow}>
+                                        <lightning-icon class="my-icon-up" icon-name="utility:arrowup" size="xx-small">
+                                        </lightning-icon>
+                                    </template>
+                                    <template if:false={stats.varianceArrow}>
+                                        <lightning-icon class="my-icon-down" icon-name="utility:arrowdown"
+                                            size="xx-small"></lightning-icon>
+                                    </template>
+                                </template>
+                            </span>
+                        </div>
+                        <div class="regular-badge">
+                            <span class="badge-content"><span class="badge-label">Target Achieved
+                                    :</span>
+                                <span class="badge-value">{stats.targetAchieved}</span></span>
+                        </div>
+                        <div class="regular-badge">
+                            <span class="badge-content"><span class="badge-label">Total Accounts :</span>
+                                <span class="badge-value">{stats.totalAccount}</span></span>
+                        </div>
+                    </span>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <div class="container2 slds-p-vertical_medium slds-m-vertical_medium" style="padding: 14px;margin-top: 0px;">
+            <div class="slds-p-top_small; display: flex;">
+                <lightning-spinner lwc:if={showSpinner} variant="brand" size="medium">
+                </lightning-spinner>
+                <template lwc:elseif={overallAccountSummary}>
+                    <div tabindex="0">
+                        <c-spm_dtc_month_summary financial-year={selYear} current-b-d-d={respectiveBDD}
+                            hide-edit-button={hideBDMEditButton} selected-b-d-m={userId}
+                            currency-symbol={currencySymbol} onmonthsummaryevent={handleChildEvntMonthSummary}>
+                        </c-spm_dtc_month_summary>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="container2 slds-p-vertical_medium slds-m-vertical_medium"
+                        style="padding-top: 0px;margin-top: 0px;">
+                        <div class="slds-p-top_small; display: flex;">
+                                <c-spm_dtc_bdm_card current-user={userId} selected-financial-year={selYear} financial-year={selYear}
+                                    currency-symbol={currencySymbol} hide-button={hideButton} is-bdm ={isBdm}></c-spm_dtc_bdm_card>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <!-- <div style="padding: 1rem;">
+            <c-spm_dtc_manager_card current-user={userId} selected-financial-year={selYear} refresh-table={timeoutId}
+                currency-symbol={currencySymbol} is-edit-disable={isEditDisable} onchildevent={handleChildEvent}></c-spm_dtc_manager_card>
+        </div> -->
+    </lightning-card>
+</template>

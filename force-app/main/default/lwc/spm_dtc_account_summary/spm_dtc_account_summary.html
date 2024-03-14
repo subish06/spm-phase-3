@@ -775,15 +775,8 @@
                         <c-spm_dtc_product_summary bus-unit-name={businessUnit} account-id={selectedAccount}
                             financial-year={financialYear} logged-user={loggedUser} refresh-table={refreshTable}
                             currency-symbol={currencySymbol} hide-button={hideButton} account-name={accountName}
-                            is-pending-data={isPendingData} onpendingchange={pendingTarUpload} oncustomevent={handleCustomEvent}>
+                            is-pending-data={isPendingData} onpendingchange={pendingTarUpload} is-bdm={isBdm} oncustomevent={handleCustomEvent}>
                         </c-spm_dtc_product_summary>
-                        <!-- value={tempActiveTabValue}> -->
-
-                        <!-- <template lwc:if={refreshTable}>
-                            <c-spm_bdm_product_table bus-unit-name={businessUnit} refresh-table={refreshTable} account-id={selectedAccount} 
-                            financial-year={financialYear} currency-symbol={currencySymbol} account-name={accountName}>
-                             </c-spm_bdm_product_table>
-                        </template> -->
                     </lightning-tab>
                 </template>
             </lightning-tabset>

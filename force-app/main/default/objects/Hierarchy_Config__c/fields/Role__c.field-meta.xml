@@ -26,6 +26,16 @@
                 <label>Admin</label>
             </value>
             <value>
+                <fullName>DTC BDD</fullName>
+                <default>false</default>
+                <label>DTC BDD</label>
+            </value>
+            <value>
+                <fullName>DTC BDM</fullName>
+                <default>false</default>
+                <label>DTC BDM</label>
+            </value>
+            <value>
                 <fullName>Sales Person</fullName>
                 <default>false</default>
                 <isActive>false</isActive>

@@ -1,28 +1,34 @@
 <template>
-    <template if:true={loading}>
-        <lightning-spinner title="Loading"></lightning-spinner>
-    </template>
     <lightning-card class="invoiceCard">
         <div class="invoiceCardBody">
-            <lightning-layout horizontal-align="end" vertical-align="start" multiple-rows="true">
-                <lightning-layout-item>
-                    <table class="slds-m-top_small pageHeader">
-                        <tr>
-                            <th>Date: </th>
-                            <td class=""><lightning-formatted-date-time value={invoice.XC_InvoiceDate__c}
-                                    time-zone="UTC" year="numeric" month="numeric"
-                                    day="numeric"></lightning-formatted-date-time></td>
-                        </tr>
-                        <tr>
-                            <th>Invoice #: </th>
-                            <td class="">{invoice.XC_InvoiceNumber__c}</td>
-                        </tr>
-                    </table>
-                </lightning-layout-item>
+            <lightning-layout
+                horizontal-align="end"
+                vertical-align="start"
+                multiple-rows="true"
+            >
+                    <lightning-layout-item>
+                        <table class="slds-m-top_small pageHeader">
+                            <tr>
+                                <th>Date: </th>
+                                <td class=""><lightning-formatted-date-time value={invoice.XC_InvoiceDate__c} time-zone="UTC" year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time></td>
+                            </tr>
+                            <tr>
+                                <th>Invoice #: </th>
+                                <td class="">{invoice.XC_InvoiceNumber__c}</td>
+                            </tr>
+                        </table>
+                    </lightning-layout-item>
             </lightning-layout>
-            <lightning-layout horizontal-align="spread" vertical-align="start" multiple-rows="true">
+            <lightning-layout
+                horizontal-align="spread"
+                vertical-align="start"
+                multiple-rows="true"
+            >
                 <lightning-layout-item size="6">
-                    <lightning-layout vertical-align="start" multiple-rows="true">
+                    <lightning-layout
+                        vertical-align="start"
+                        multiple-rows="true"
+                    >
                         <lightning-layout-item flexibility="no-grow">
                             Bill To:
                         </lightning-layout-item>
@@ -30,10 +36,13 @@
                             <lightning-formatted-text value={invoice.XC_BillTo__c}></lightning-formatted-text>
                         </lightning-layout-item>
                     </lightning-layout>
-
+                    
                 </lightning-layout-item>
                 <lightning-layout-item size="6">
-                    <lightning-layout vertical-align="start" multiple-rows="true">
+                    <lightning-layout
+                        vertical-align="start"
+                        multiple-rows="true"
+                    >
                         <lightning-layout-item flexibility="no-grow">
                             Ship To:
                         </lightning-layout-item>
@@ -51,26 +60,14 @@
                     <th class="tableHeader">Due Date</th>
                     <th class="tableHeader">Purchase Order #</th>
                     <th class="tableHeader">Sales Order #</th>
-                    <th class="tableHeader">Total Amount</th>
                     <template if:true={isPaid}>
                         <th rowspan="2">
-                            <lightning-button variant="brand" label={paidStatus} title={paidStatus} disabled
-                                class="slds-m-around_x-small paymentButton"></lightning-button>
-                            <!-- <template if:true={isPendingConfirmation}>
-                                <lightning-helptext content={label.paymentPendingHelpTextLabel} class="slds-m-around_x-small paymentButton"></lightning-helptext>
-                            </template> -->
+                            <lightning-button variant="brand" label={paidStatus} title={paidStatus} disabled class="slds-m-around_x-small paymentButton"></lightning-button>
                         </th>
                     </template>
                     <template if:false={isPaid}>
                         <th rowspan="2">
-                            <!-- <lightning-button variant="brand" label={paymentLabel} title={paymentLabel} onclick={togglePayment} class="slds-m-around_x-small paymentButton"></lightning-button> -->
-                            <lightning-button variant="brand" label={paymentLabel} title={paymentLabel}
-                                onclick={openStripeHostedPage}
-                                class="slds-m-around_x-small paymentButton"></lightning-button>
-                            <!-- <template if:true={isPendingConfirmation}>
-                                <lightning-helptext content={label.paymentPendingHelpTextLabel} class="slds-m-around_x-small paymentButton"></lightning-helptext>
-                            </template> -->
-
+                            <lightning-button variant="brand" label={paymentLabel} title={paymentLabel} onclick={togglePayment} class="slds-m-around_x-small paymentButton"></lightning-button>
                         </th>
                     </template>
                 </tr>
@@ -78,8 +75,7 @@
                     <td class="defaultData">{invoice.XC_CustomerId__c}</td>
                     <td class="defaultData">{invoice.XC_SalespersonId__c}</td>
                     <td class="defaultData">{invoice.XC_PaymentTerms__c}</td>
-                    <td class="defaultData"><lightning-formatted-date-time value={invoice.XC_DueDate__c} time-zone="UTC"
-                            year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time></td>
+                    <td class="defaultData"><lightning-formatted-date-time value={invoice.XC_DueDate__c} time-zone="UTC" year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time></td>
                     <td class="defaultData">{invoice.XC_PurchaseOrderNumber__c}</td>
                     <template if:true={hasLinkedOrder}>
                         <td class="linkData"><a onclick={navToOrderSummary}>{invoice.XC_SalesOrderNumber__c}</a></td>
@@ -87,19 +83,17 @@
                     <template if:false={hasLinkedOrder}>
                         <td class="defaultData">{invoice.XC_SalesOrderNumber__c}</td>
                     </template>
-                    <td class="defaultData"><lightning-formatted-number value={invoice.XC_Total__c}
-                            format-style="currency" currency-code="USD"></lightning-formatted-number></td>
                 </tr>
             </table>
 
             <template if:true={showPayment}>
-                <c-xc-stripe-payment-l-w-c invoice-id={invoice.Id}>
-                </c-xc-stripe-payment-l-w-c>
+                <c-xc-stripe-payment-l-w-c
+                invoice-id={invoice.Id}>
+            </c-xc-stripe-payment-l-w-c>
             </template>
-            <template if:true={isStripePage}>
-
-            </template>
-            <lightning-accordion active-section-name='' allow-multiple-sections-open>
+            <lightning-accordion
+                active-section-name=''
+                allow-multiple-sections-open>
                 <lightning-accordion-section name="invoiceItems" label="Details">
                     <table class="slds-m-top_small headerMinorDetails">
                         <tr>
@@ -110,12 +104,10 @@
                         </tr>
                         <tr>
                             <td class="defaultData">{invoice.XC_ShippingMethod__c}</td>
-                            <td class="defaultData"><lightning-formatted-date-time
-                                    value={invoice.XC_RequestedShipDate__c} time-zone="UTC" year="numeric"
-                                    month="numeric" day="numeric"></lightning-formatted-date-time></td>
+                            <td class="defaultData"><lightning-formatted-date-time value={invoice.XC_RequestedShipDate__c} time-zone="UTC" year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time></td>
                             <td class="defaultData">{invoice.XC_PackingSlipNumber__c}</td>
                             <td class="defaultData">{invoice.XC_TrackingNumber__c}</td>
-
+                            
                         </tr>
                     </table>
                     <!-- <div class="slds-border_bottom"></div> -->
@@ -153,57 +145,45 @@
                                 <td class="defaultData">{lineItem.XC_QuantityOrdered__c}</td>
                                 <td class="defaultData">{lineItem.XC_QuantityBackordered__c}</td>
                                 <td class="defaultData">{lineItem.XC_QuantityShipped__c}</td>
-                                <td class="qtyAmountData"><lightning-formatted-number value={lineItem.XC_UnitPrice__c}
-                                        format-style="currency" currency-code="USD"></lightning-formatted-number></td>
-                                <td class="qtyAmountData"><lightning-formatted-number value={lineItem.XC_ExtPrice__c}
-                                        format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                <td class="qtyAmountData"><lightning-formatted-number value={lineItem.XC_UnitPrice__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                <td class="qtyAmountData"><lightning-formatted-number value={lineItem.XC_ExtPrice__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
                             </tr>
                         </template>
                     </table>
-                    <lightning-layout horizontal-align="end" vertical-align="start" multiple-rows="true">
+                    <lightning-layout
+                        horizontal-align="end"
+                        vertical-align="start"
+                        multiple-rows="true"
+                    >
                         <lightning-layout-item>
                             <table class="slds-m-top_small priceTable">
                                 <tr>
                                     <th>Total</th>
-                                    <td class="defaultData"><lightning-formatted-number value={totalCost}
-                                            format-style="currency" currency-code="USD"></lightning-formatted-number>
-                                    </td>
+                                    <td class="defaultData"><lightning-formatted-number value={totalCost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
                                 </tr>
                                 <tr>
                                     <th>Misc</th>
-                                    <td class="defaultData"><lightning-formatted-number value={miscCost}
-                                            format-style="currency" currency-code="USD"></lightning-formatted-number>
-                                    </td>
+                                    <td class="defaultData"><lightning-formatted-number value={miscCost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
                                 </tr>
-                                <!-- <tr>
-                                    <th>CC 3%</th>
-                                    <td class="defaultData"><lightning-formatted-number value={cc225Cost}
-                                            format-style="currency" currency-code="USD"></lightning-formatted-number>
-                                    </td>
-                                </tr> -->
+                                <tr>
+                                    <th>CC 2.25%</th>
+                                    <td class="defaultData"><lightning-formatted-number value={cc225Cost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                </tr>
                                 <tr>
                                     <th>Tax</th>
-                                    <td class="defaultData"><lightning-formatted-number value={taxCost}
-                                            format-style="currency" currency-code="USD"></lightning-formatted-number>
-                                    </td>
+                                    <td class="defaultData"><lightning-formatted-number value={taxCost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
                                 </tr>
                                 <tr>
                                     <th>Freight</th>
-                                    <td class="defaultData"><lightning-formatted-number value={freightCost}
-                                            format-style="currency" currency-code="USD"></lightning-formatted-number>
-                                    </td>
+                                    <td class="defaultData"><lightning-formatted-number value={freightCost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
                                 </tr>
                                 <tr>
                                     <th>Total Discount</th>
-                                    <td class="defaultData"><lightning-formatted-number value={discountCost}
-                                            format-style="currency" currency-code="USD"></lightning-formatted-number>
-                                    </td>
+                                    <td class="defaultData"><lightning-formatted-number value={discountCost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
                                 </tr>
                                 <tr>
                                     <th>Total</th>
-                                    <td class="defaultData"><lightning-formatted-number value={totalCost}
-                                            format-style="currency" currency-code="USD"></lightning-formatted-number>
-                                    </td>
+                                    <td class="defaultData"><lightning-formatted-number value={totalCost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
                                 </tr>
                             </table>
                         </lightning-layout-item>
@@ -212,93 +192,5 @@
             </lightning-accordion>
         </div>
     </lightning-card>
-    <!-- Payment Progress Modal-->
-    <template if:true={isModalOpen}>
-        <!-- Modal/Popup Box LWC starts here -->
-        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
-            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
-            <div class="slds-modal__container">
-                <!-- Modal/Popup Box LWC header here -->
-                <header class="slds-modal__header">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-                        title="Close" onclick={closeModal}>
-                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
-                            size="small"></lightning-icon>
-                        <span class="slds-assistive-text">Close</span>
-                    </button>
-                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
-                        {label.paymentModalHeadingLabel}</h2>
-                </header>
-                <!-- Modal/Popup Box LWC body starts here -->
-                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-                    <p>{label.paymentModalBody1Label}
-                    </p>
-                    <p>{label.paymentModalBody2Label} </br><a href={checkoutLink}
-                            class="checkoutlink">{checkoutLink}</a>
-                    </p></br>
-                    <p><b>{label.paymentModalBody3Label}
-                        </b></p>
-                </div>
-                <!-- Modal/Popup Box LWC footer starts here -->
-                <footer class="slds-modal__footer">
-                    <button class="slds-button slds-button_neutral" onclick={closeModal}
-                        title="Cancel">{label.paymentModalCancelLabel}</button>
-                    <button class="slds-button slds-button_brand" onclick={submitDetails}
-                        title="OK">{label.paymentModalOkLabel}</button>
-                </footer>
-            </div>
-        </section>
-        <div class="slds-backdrop slds-backdrop_open"></div>
-    </template>
-
-
-    <template if:true={showCardModal}>
-        <!-- Modal/Popup Box LWC starts here -->
-        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
-            aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
-            <div class="slds-modal__container">
-                <!-- Modal/Popup Box LWC header here -->
-                <header class="slds-modal__header">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-                        title="Close" onclick={closeCardModal}>
-                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
-                            size="small"></lightning-icon>
-                        <span class="slds-assistive-text">Close</span>
-                    </button>
-                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">
-                        Select Payment Type</h2>
-                </header>
-                <!-- Modal/Popup Box LWC body starts here -->
-                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
-                    <!-- <p style="text-align: center">Please select a Payment Type. Please note 3% service charge will be
-                        applicable for card payment.</p> -->
-
-                    <div style="padding: 8px;text-align: center;padding-top: 16px;">
-                        <template if:true={isCard}>
-                            <lightning-button variant="brand" label="Card Payment" title="Non-primary action"
-                                onclick={handleCard} class="slds-m-left_x-small"></lightning-button>
-
-                            <lightning-button label="Bank Account" title="Non-primary action"
-                                onclick={handleBankAccount} class="slds-m-left_x-small"></lightning-button>
-                        </template>
-
-                        <template if:false={isCard}>
-                            <lightning-button label="Card Payment" title="Non-primary action" onclick={handleCard}
-                                class="slds-m-left_x-small"></lightning-button>
-
-                            <lightning-button variant="brand" label="Bank Account" title="Non-primary action"
-                                onclick={handleBankAccount} class="slds-m-left_x-small"></lightning-button>
-                        </template>
-                    </div>
-                </div>
-                <!-- Modal/Popup Box LWC footer starts here -->
-                <footer class="slds-modal__footer">
-                    <button class="slds-button slds-button_neutral" onclick={closeCardModal}
-                        title="Cancel">Cancel</button>
-                    <button class="slds-button slds-button_brand" onclick={openStripeHostedPage} title="OK">Ok</button>
-                </footer>
-            </div>
-        </section>
-        <div class="slds-backdrop slds-backdrop_open"></div>
-    </template>
+    
 </template>

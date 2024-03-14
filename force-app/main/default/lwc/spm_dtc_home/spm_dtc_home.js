@@ -31,7 +31,7 @@ export default class Spm_dtc_home extends LightningElement {
     })();
 
 
-    BDMList = [];
+    @track BDMList = [];
     financialYearPickList = [];
     bdmids = [];
 
@@ -125,6 +125,8 @@ export default class Spm_dtc_home extends LightningElement {
             this.prevCurrencySymbol = currencyFormatter(JSON.parse(data).prevFYCurrencyVal);
             this.BDDTarget = JSON.parse(data).BDDTarget;
             this.BDMList = JSON.parse(data).BDMList;
+            this.fetchStats();
+
         } else if (error) {
             console.error(error);
             showError(error);
@@ -138,13 +140,15 @@ export default class Spm_dtc_home extends LightningElement {
                 this.isLoading = false;
                 this.stats.prevYear = result.prevYear;
                 this.stats.prevYearActual = this.prevCurrencySymbol + nFormatter(result.prevYearActual, 2);
-                this.stats.curYearTarget = this.currencySymbol + nFormatter(result.curYearTarget, 2);
-                this.stats.curYearActual = this.currencySymbol + nFormatter(result.curYearActual, 2);
+                this.stats.curYearTarget = this.prevCurrencySymbol + nFormatter(result.curYearTarget, 2);//this.currencySymbol + nFormatter(result.curYearTarget, 2);
+                this.stats.curYearActual = this.prevCurrencySymbol + nFormatter(result.curYearActual, 2);//this.currencySymbol + nFormatter(result.curYearActual, 2);
 
-                this.stats.curYearVariance = this.currencySymbol + nFormatter(result.curYearVariance, 2);
-
+                this.stats.curYearVariance = this.prevCurrencySymbol  + nFormatter(result.curYearVariance, 2);
+                console.log('this.stats.prevYearActual====>',this.stats.prevYearActual);
+                console.log('this.stats.curYearTarget====>',this.stats.curYearTarget);
+                console.log('this.stats.curYearActual====>',this.stats.curYearActual);
                 if (result.curYearVariance != null & result.curYearVariance < 0) {
-                    this.stats.curYearVariance = this.currencySymbol + nFormatter((-1 * result.curYearVariance), 2);
+                    this.stats.curYearVariance = this.prevCurrencySymbol  + nFormatter((-1 * result.curYearVariance), 2);
                 }
 
                 this.stats.varianceArrow = (result.curYearTarget - result.curYearActual < 0);
@@ -174,6 +178,7 @@ export default class Spm_dtc_home extends LightningElement {
         this.BDMList = this.BDMList.map((bdm) => {
             return { ...bdm, currencyVal: this.currencyValue };
         });
+        console.log('save method BDMList===>', this.BDMList)
 
         this.isLoading = true;
         this.isPopupOpen = false;
@@ -193,10 +198,12 @@ export default class Spm_dtc_home extends LightningElement {
                 this.isPopupOpen = false;
                 this.isTargetChanged = false;
                 showSuccess('Target Updated Successfully');
+                location.reload();
                 this.toggleModal();
-                //this.handleRefresh();
+                this.handleRefresh();
                 this.fetchStats();
-
+                const childEvent = new CustomEvent('childevent', { detail: '' });
+                this.template.querySelector('c-spm_dtc_manager_card').dispatchEvent(childEvent);
                 // const childEvent = new CustomEvent('childevent', { detail: '' });
                 // this.template.querySelector('c-spm_bdd_manager_card').dispatchEvent(childEvent);
                 location.reload();
@@ -250,7 +257,7 @@ export default class Spm_dtc_home extends LightningElement {
         this.bdmids = changedBDMs.map((bdm) => bdm.userId);
 
         this.BDMList = [...updatedList];
-
+        console.log('BDMList===>', this.BDMList);
     }
 
     // handleSave(event){

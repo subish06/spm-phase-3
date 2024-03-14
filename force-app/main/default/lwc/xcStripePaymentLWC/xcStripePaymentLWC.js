@@ -45,10 +45,7 @@ export default class XcStripePaymentLWC extends LightningElement
 
     connectedCallback()
     {
-        console.log('Inside Stripe Payment LWC Line 48');
         this.boundListener = this.handleVFResponse.bind(this);
-        console.log('Inside Stripe Payment LWC Line 50');
-
         // Binding EventListener here when Data received from VF
         window.addEventListener("message", this.boundListener);
         //this.verifyCartData();
@@ -134,38 +131,18 @@ export default class XcStripePaymentLWC extends LightningElement
 
     handleVFResponse(message) 
     {
-        // var cardname = document.getElementById("nameOnCard").value;
-        // var cardlast4digit = document.getElementByName("cardnumber").value; 
-        console.log('-----------');
-        // console.log(cardname);
-        // console.log(cardlast4digit);
-        console.log('Inside Stripe Payment LWC Line 137');
         console.log(message.data);
-        console.log('Inside Stripe Payment LWC Line 139');
         console.log(message.origin);
-        console.log('Inside Stripe Payment LWC Line 141');
-        //console.log(JSON.parse(JSON.stringify(message.data)));
-        console.log('Inside Stripe Payment LWC Line 143');
-        console.log(location.host);
+        console.log(JSON.parse(JSON.stringify(message.data)));
         if (message.origin === 'https://' + location.host) 
         {
-            console.log('Inside Stripe Payment LWC Line 147');
             this.receivedMessage = message.data;
-            console.log('Inside Stripe Payment LWC Line 149');
-            console.log(message.data.success);
             if(message.data.success)
             {
-                console.log('Inside Stripe Payment LWC Line 153');
                 this.handlePaymentSuccess(message.data.paymentId, message.data.amount);
-                console.log('Inside Stripe Payment LWC Line 155');
             }
-            console.log('Inside Stripe Payment LWC Line 157'+message.data.setSpinner);
-            console.log('Inside Stripe Payment LWC Line 158'+this.showSpinner);
-            console.log('Inside Stripe Payment LWC Line 159'+message.data.boolVal);
-
             if(message.data.setSpinner)
             {
-                console.log('Inside Stripe Payment LWC Line 163');
                 this.showSpinner = message.data.boolVal;
             }
         }
@@ -173,17 +150,12 @@ export default class XcStripePaymentLWC extends LightningElement
 
     handlePaymentSuccess(paymentId, amount)
     {
-        console.log('Inside Stripe Payment LWC Line 165');
-        console.log(this.cartId);
-        console.log(this.invoiceId);
         if(this.cartId)
         {
-            console.log('Inside Stripe Payment LWC Line 170');
             this.handleCartPayment(paymentId);
         }
         else if(this.invoiceId)
         {
-            console.log('Inside Stripe Payment LWC Line 174');
             this.handleInvoicePayment(paymentId);
         }
         
@@ -198,8 +170,6 @@ export default class XcStripePaymentLWC extends LightningElement
             payIntentId : paymentId
         })
         .then((result) => {
-            console.log('Inside Stripe Payment LWC Line 190');
-            console.log(result);
             if(result.success)
             {
                 console.log(result);
@@ -229,8 +199,6 @@ export default class XcStripePaymentLWC extends LightningElement
             payIntentId : paymentId
         })
         .then((result) => {
-            console.log('Inside Stripe Payment LWC Line 221');
-            console.log(JSON.stringify(result));
             if(result.success)
             {
                 console.log(result);
